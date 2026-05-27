@@ -275,8 +275,8 @@ class Analysis {
                 tt.t,
                 tt.p,
                 d,
-                p_combined < 0.05,
-                p_combined < 0.01,
+                mw.p_value < 0.05,
+                mw.p_value < 0.01,
                 ci.ci_low,
                 ci.ci_high
             ));
