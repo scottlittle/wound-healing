@@ -23,44 +23,45 @@
                     </div>
                 </div>
 
-                <div class="canvas-container">
-                    <canvas id="sim-canvas" width="400" height="400"></canvas>
-                    <div class="legend">
-                        <span class="legend-item"><span class="color-box" style="background: #1a1a2e"></span> Empty/Wound</span>
-                        <span class="legend-item"><span class="color-box" style="background: #4a90d9"></span> Epithelial</span>
-                        <span class="legend-item"><span class="color-box" style="background: #2ecc71"></span> Fibroblast</span>
-                        <span class="legend-item"><span class="color-box" style="background: #e74c3c"></span> Immune</span>
-                        <span class="legend-item"><span class="color-box" style="background: #95a5a6"></span> Healed</span>
-                    </div>
-                </div>
-
-                <div class="healing-curve-container">
-                    <canvas id="healing-curve" width="400" height="200"></canvas>
-                </div>
-
-                <div class="controls">
-                    <div class="control-group">
-                        <label for="num-runs">Number of runs per phase:</label>
-                        <input type="number" id="num-runs" value="100" min="10" max="512">
-                    </div>
-                    <div class="control-group">
-                        <label for="intention-duration">Intention duration (seconds):</label>
-                        <input type="number" id="intention-duration" value="10" min="5" max="60">
-                    </div>
-                    <div class="control-group">
-                        <label for="max-steps">Max simulation steps:</label>
-                        <input type="number" id="max-steps" value="100" min="50" max="200">
-                    </div>
-                </div>
+                <div class="simulation-layout">
+                    <div class="simulation-controls">
+                        <div class="controls">
+                            <div class="control-group">
+                                <label for="num-runs">Number of runs per phase:</label>
+                                <input type="number" id="num-runs" value="100" min="10" max="512">
+                            </div>
+                            <div class="control-group">
+                                <label for="intention-duration">Intention duration (seconds):</label>
+                                <input type="number" id="intention-duration" value="10" min="5" max="60">
+                            </div>
+                            <div class="control-group">
+                                <label for="max-steps">Max simulation steps:</label>
+                                <input type="number" id="max-steps" value="100" min="50" max="200">
+                            </div>
+                        </div>
 
                 <div class="buttons">
                     <button id="btn-control" class="btn btn-primary">Start Control Phase</button>
                     <button id="btn-intention" class="btn btn-success" disabled>Start Intention Phase</button>
                     <button id="btn-analyze" class="btn btn-secondary" disabled>Run Analysis</button>
-                    <button id="btn-reset" class="btn btn-warning">Reset</button>
                 </div>
 
-                <div id="status" class="status">Ready to begin</div>
+                        <div id="status" class="status">Ready to begin</div>
+                    </div>
+
+                    <div class="simulation-visuals">
+                        <div class="canvas-container">
+                            <canvas id="sim-canvas" width="400" height="400"></canvas>
+                            <div class="legend">
+                                <span class="legend-item"><span class="color-box" style="background: #1a1a2e"></span> Empty/Wound</span>
+                                <span class="legend-item"><span class="color-box" style="background: #4a90d9"></span> Epithelial</span>
+                                <span class="legend-item"><span class="color-box" style="background: #2ecc71"></span> Fibroblast</span>
+                                <span class="legend-item"><span class="color-box" style="background: #e74c3c"></span> Immune</span>
+                                <span class="legend-item"><span class="color-box" style="background: #95a5a6"></span> Healed</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="results-panel">

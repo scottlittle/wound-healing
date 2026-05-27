@@ -14,12 +14,11 @@ class App {
         this.intentionComplete = false;
 
         this.simCanvas = new Visualizer('sim-canvas');
-        this.curveCanvas = new Visualizer('healing-curve');
+        this.resultsCanvas = new Visualizer('cdf-90');
 
         this.btnControl = document.getElementById('btn-control');
         this.btnIntention = document.getElementById('btn-intention');
         this.btnAnalyze = document.getElementById('btn-analyze');
-        this.btnReset = document.getElementById('btn-reset');
         this.status = document.getElementById('status');
         this.runCounter = document.getElementById('run-counter');
         this.timer = document.getElementById('timer');
@@ -35,7 +34,6 @@ class App {
         this.btnControl.addEventListener('click', () => this.runControlPhase());
         this.btnIntention.addEventListener('click', () => this.runIntentionPhase());
         this.btnAnalyze.addEventListener('click', () => this.runAnalysis());
-        this.btnReset.addEventListener('click', () => this.reset());
 
         this.drawInitialGrid();
         this.initSeeds();
@@ -207,20 +205,6 @@ class App {
 
                 this.simCanvas.renderGrid(sim.grid, sim.grid_size, `Run ${run_idx + 1}`);
 
-                this.curveCanvas.drawLineChart('healing-curve', [
-                    { data: healing_curve, color: '#4a90d9', lineWidth: 2 }
-                ], {
-                    title: 'Healing Curve',
-                    xLabel: 'Step',
-                    yLabel: 'Wound Closure (%)',
-                    maxY: 105,
-                    minY: 0,
-                    showLines: [
-                        { value: 50, color: 'rgba(100,100,100,0.5)' },
-                        { value: 90, color: 'rgba(100,100,100,0.5)' },
-                    ]
-                });
-
                 await this.sleep(100);
             }
 
@@ -317,14 +301,14 @@ class App {
         const time_to_90_int = this.intention_results.filter(r => r.time_to_90 !== null).map(r => r.time_to_90);
         const time_to_90_ctl = this.control_results.filter(r => r.time_to_90 !== null).map(r => r.time_to_90);
 
-        this.curveCanvas.drawCDF('cdf-90', time_to_90_int, time_to_90_ctl, 'CDF: Time to 90% Closure');
-        this.curveCanvas.drawBoxPlot('boxplot-90', time_to_90_int, time_to_90_ctl, 'Time to 90% Closure');
+        this.resultsCanvas.drawCDF('cdf-90', time_to_90_int, time_to_90_ctl, 'CDF: Time to 90% Closure');
+        this.resultsCanvas.drawBoxPlot('boxplot-90', time_to_90_int, time_to_90_ctl, 'Time to 90% Closure');
 
         const time_to_100_int = this.intention_results.filter(r => r.time_to_100 !== null).map(r => r.time_to_100);
         const time_to_100_ctl = this.control_results.filter(r => r.time_to_100 !== null).map(r => r.time_to_100);
 
-        this.curveCanvas.drawCDF('cdf-100', time_to_100_int, time_to_100_ctl, 'CDF: Time to 100% Closure');
-        this.curveCanvas.drawBoxPlot('boxplot-100', time_to_100_int, time_to_100_ctl, 'Time to 100% Closure');
+        this.resultsCanvas.drawCDF('cdf-100', time_to_100_int, time_to_100_ctl, 'CDF: Time to 100% Closure');
+        this.resultsCanvas.drawBoxPlot('boxplot-100', time_to_100_int, time_to_100_ctl, 'Time to 100% Closure');
     }
 
     displayInterpretation(results) {
@@ -353,45 +337,6 @@ class App {
         html += `<p class="seed-info">Seed source: <strong>${this.seed_source}</strong></p>`;
 
         content.innerHTML = html;
-    }
-
-    async reset() {
-        if (this.isRunning) return;
-
-        this.control_results = [];
-        this.intention_results = [];
-        this.control_curves = [];
-        this.intention_curves = [];
-        this.all_seeds = [];
-        this.control_seeds = [];
-        this.intention_seeds = [];
-        this.seed_source = '';
-        this.seedsReady = false;
-        this.controlComplete = false;
-        this.intentionComplete = false;
-
-        this.btnControl.disabled = true;
-        this.btnIntention.disabled = true;
-        this.btnAnalyze.disabled = true;
-
-        this.setStatus('Ready to begin');
-        this.setRunCounter(0, 0);
-        this.hideTimer();
-
-        document.getElementById('stats-table').classList.add('hidden');
-        document.getElementById('interpretation').classList.add('hidden');
-
-        this.drawInitialGrid();
-
-        const ctx = document.getElementById('healing-curve').getContext('2d');
-        ctx.clearRect(0, 0, 400, 200);
-
-        for (const id of ['cdf-90', 'cdf-100', 'boxplot-90', 'boxplot-100']) {
-            const c = document.getElementById(id);
-            if (c) c.getContext('2d').clearRect(0, 0, c.width, c.height);
-        }
-
-        await this.initSeeds();
     }
 
     sleep(ms) {
