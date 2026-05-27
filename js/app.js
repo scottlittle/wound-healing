@@ -314,61 +314,6 @@ class App {
     }
 
     displayCharts() {
-        const max_len = Math.max(
-            ...this.intention_curves.map(c => c.length),
-            ...this.control_curves.map(c => c.length)
-        );
-
-        const intention_padded = this.intention_curves.map(c => {
-            const padded = [...c];
-            while (padded.length < max_len) padded.push(padded[padded.length - 1]);
-            return padded;
-        });
-
-        const control_padded = this.control_curves.map(c => {
-            const padded = [...c];
-            while (padded.length < max_len) padded.push(padded[padded.length - 1]);
-            return padded;
-        });
-
-        const intention_mean = [];
-        const intention_sem = [];
-        const control_mean = [];
-        const control_sem = [];
-
-        for (let i = 0; i < max_len; i++) {
-            const int_vals = intention_padded.map(c => c[i]);
-            const ctl_vals = control_padded.map(c => c[i]);
-
-            intention_mean.push(int_vals.reduce((a, b) => a + b, 0) / int_vals.length);
-            control_mean.push(ctl_vals.reduce((a, b) => a + b, 0) / ctl_vals.length);
-
-            const int_std = Math.sqrt(int_vals.reduce((sum, v) => sum + (v - intention_mean[i]) ** 2, 0) / int_vals.length);
-            const ctl_std = Math.sqrt(ctl_vals.reduce((sum, v) => sum + (v - control_mean[i]) ** 2, 0) / ctl_vals.length);
-
-            intention_sem.push(int_std / Math.sqrt(int_vals.length));
-            control_sem.push(ctl_std / Math.sqrt(ctl_vals.length));
-        }
-
-        this.curveCanvas.drawLineChart('mean-curves', [
-            { data: intention_mean, color: '#4a90d9', lineWidth: 2, fillColor: 'rgba(74, 144, 217, 0.1)' },
-            { data: control_mean, color: '#e74c3c', lineWidth: 2, fillColor: 'rgba(231, 76, 60, 0.1)' },
-        ], {
-            title: 'Mean Healing Curves with SEM',
-            xLabel: 'Time Step',
-            yLabel: 'Wound Closure (%)',
-            maxY: 105,
-            minY: 0,
-            showLines: [
-                { value: 50, color: 'rgba(100,100,100,0.5)' },
-                { value: 90, color: 'rgba(100,100,100,0.5)' },
-            ],
-            legend: [
-                { label: `Intention (n=${this.intention_results.length})`, color: '#4a90d9' },
-                { label: `Control (n=${this.control_results.length})`, color: '#e74c3c' },
-            ]
-        });
-
         const time_to_90_int = this.intention_results.filter(r => r.time_to_90 !== null).map(r => r.time_to_90);
         const time_to_90_ctl = this.control_results.filter(r => r.time_to_90 !== null).map(r => r.time_to_90);
 
@@ -441,7 +386,7 @@ class App {
         const ctx = document.getElementById('healing-curve').getContext('2d');
         ctx.clearRect(0, 0, 400, 200);
 
-        for (const id of ['mean-curves', 'cdf-90', 'cdf-100', 'boxplot-90', 'boxplot-100']) {
+        for (const id of ['cdf-90', 'cdf-100', 'boxplot-90', 'boxplot-100']) {
             const c = document.getElementById(id);
             if (c) c.getContext('2d').clearRect(0, 0, c.width, c.height);
         }
