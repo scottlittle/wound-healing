@@ -349,8 +349,8 @@ class WoundSimulation {
         }
 
         const immune_indices = [];
-        for (let i = 0; i < this.grid.length; i++) {
-            if (this.grid[i] === WoundSimulation.CELL_IMMUNE) {
+        for (let i = 0; i < new_grid.length; i++) {
+            if (new_grid[i] === WoundSimulation.CELL_IMMUNE) {
                 immune_indices.push(i);
             }
         }
@@ -379,11 +379,11 @@ class WoundSimulation {
                         const [ny, nx] = empty_neighbors[this.rng.integer(empty_neighbors.length)];
                         const tidx = this.idx(ny, nx);
                         const resistance = this.wound_resistance[tidx];
-                        if (this.rng.random() < (1 - resistance)) {
-                            new_grid[tidx] = WoundSimulation.CELL_IMMUNE;
-                            new_immune_age[tidx] = new_immune_age[idx];
-                            new_transient_immune[tidx] = 0;
-                            resistance_attempts.set(tidx, 'success');
+                    if (this.rng.random() < (1 - resistance)) {
+                        new_grid[tidx] = WoundSimulation.CELL_IMMUNE;
+                        new_immune_age[tidx] = new_immune_age[idx];
+                        new_transient_immune[tidx] = new_transient_immune[idx];
+                        resistance_attempts.set(tidx, 'success');
                         } else {
                             resistance_attempts.set(tidx, 'fail');
                         }
