@@ -174,10 +174,10 @@ class WoundSimulation {
         }
     }
 
-    _get_neighbors(y, x) {
+    _get_neighbors(y, x, radius = 1) {
         const neighbors = [];
-        for (let dy = -1; dy <= 1; dy++) {
-            for (let dx = -1; dx <= 1; dx++) {
+        for (let dy = -radius; dy <= radius; dy++) {
+            for (let dx = -radius; dx <= radius; dx++) {
                 if (dy === 0 && dx === 0) continue;
                 const ny = y + dy;
                 const nx = x + dx;
@@ -187,6 +187,21 @@ class WoundSimulation {
             }
         }
         return neighbors;
+    }
+
+    _count_neighbors(y, x, cell_type, radius = 1) {
+        const neighbors = this._get_neighbors(y, x, radius);
+        let count = 0;
+        for (const [ny, nx] of neighbors) {
+            if (this.grid[this.idx(ny, nx)] === cell_type) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    _has_neighbor(y, x, cell_type) {
+        return this._count_neighbors(y, x, cell_type, 1) > 0;
     }
 
     step() {
@@ -213,7 +228,19 @@ class WoundSimulation {
             const y = Math.floor(idx / this.grid_size);
             const x = idx % this.grid_size;
 
-            if (this.rng.random() < this.p_migrate) {
+            const non_empty_neighbors = this._count_neighbors(y, x, WoundSimulation.CELL_EPITHELIAL) +
+                this._count_neighbors(y, x, WoundSimulation.CELL_FIBROBLAST) +
+                this._count_neighbors(y, x, WoundSimulation.CELL_IMMUNE) +
+                this._count_neighbors(y, x, WoundSimulation.CELL_HEALED);
+
+            const contact_inhibition = non_empty_neighbors >= 6 ? 0.3 : 1.0;
+
+            let migrate_prob = this.p_migrate;
+            if (this._has_neighbor(y, x, WoundSimulation.CELL_FIBROBLAST)) {
+                migrate_prob *= 1.5;
+            }
+
+            if (this.rng.random() < migrate_prob * contact_inhibition) {
                 const neighbors = this._get_neighbors(y, x);
                 const empty_neighbors = neighbors.filter(([ny, nx]) =>
                     this.grid[this.idx(ny, nx)] === WoundSimulation.CELL_EMPTY
@@ -224,7 +251,13 @@ class WoundSimulation {
                 }
             }
 
-            if (this.rng.random() < this.p_proliferate) {
+            const near_immune = this._count_neighbors(y, x, WoundSimulation.CELL_IMMUNE, 2);
+            let proliferate_prob = this.p_proliferate;
+            if (near_immune > 0) {
+                proliferate_prob *= (1 + 0.2 * near_immune);
+            }
+
+            if (this.rng.random() < proliferate_prob * contact_inhibition) {
                 const neighbors = this._get_neighbors(y, x);
                 const empty_neighbors = neighbors.filter(([ny, nx]) =>
                     this.grid[this.idx(ny, nx)] === WoundSimulation.CELL_EMPTY
@@ -249,7 +282,19 @@ class WoundSimulation {
             const y = Math.floor(idx / this.grid_size);
             const x = idx % this.grid_size;
 
-            if (this.rng.random() < this.p_fibroblast_migrate) {
+            let migrate_prob = this.p_fibroblast_migrate;
+
+            const immune_count = this._count_neighbors(y, x, WoundSimulation.CELL_IMMUNE, 2);
+            if (immune_count > 0) {
+                migrate_prob *= (1 + 0.3 * immune_count);
+            }
+
+            const healed_neighbors = this._count_neighbors(y, x, WoundSimulation.CELL_HEALED);
+            if (healed_neighbors > 0) {
+                migrate_prob *= Math.pow(0.7, healed_neighbors);
+            }
+
+            if (this.rng.random() < migrate_prob) {
                 const neighbors = this._get_neighbors(y, x);
                 const empty_neighbors = neighbors.filter(([ny, nx]) =>
                     this.grid[this.idx(ny, nx)] === WoundSimulation.CELL_EMPTY
