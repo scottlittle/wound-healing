@@ -14,7 +14,7 @@ class App {
         this.intentionComplete = false;
 
         this.simCanvas = new Visualizer('sim-canvas');
-        this.resultsCanvas = new Visualizer('cdf-90');
+        this.resultsCanvas = new Visualizer('cdf-100');
 
         this.btnControl = document.getElementById('btn-control');
         this.btnIntention = document.getElementById('btn-intention');
@@ -292,12 +292,6 @@ class App {
     }
 
     displayCharts() {
-        const time_to_90_int = this.intention_results.filter(r => r.time_to_90 !== null).map(r => r.time_to_90);
-        const time_to_90_ctl = this.control_results.filter(r => r.time_to_90 !== null).map(r => r.time_to_90);
-
-        this.resultsCanvas.drawCDF('cdf-90', time_to_90_int, time_to_90_ctl, 'CDF: Time to 90% Closure');
-        this.resultsCanvas.drawBoxPlot('boxplot-90', time_to_90_int, time_to_90_ctl, 'Time to 90% Closure');
-
         const time_to_100_int = this.intention_results.filter(r => r.time_to_100 !== null).map(r => r.time_to_100);
         const time_to_100_ctl = this.control_results.filter(r => r.time_to_100 !== null).map(r => r.time_to_100);
 
