@@ -130,7 +130,7 @@ class WoundSimulation {
         for (let i = 0; i < size; i++) {
             if (wound_mask[i]) {
                 this.grid[i] = WoundSimulation.CELL_EMPTY;
-                this.wound_resistance[i] = 0.8;
+                this.wound_resistance[i] = 0.7;
             }
         }
 
@@ -138,7 +138,7 @@ class WoundSimulation {
         for (let y = 0; y < this.grid_size; y++) {
             for (let x = 0; x < this.grid_size; x++) {
                 const d = dist[this.idx(y, x)];
-                if (d > this.wound_radius && d <= this.wound_radius + 1) {
+                if (d > this.wound_radius && d <= this.wound_radius + 3) {
                     perimeter_indices.push(this.idx(y, x));
                 }
             }
