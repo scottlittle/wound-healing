@@ -130,7 +130,7 @@ class WoundSimulation {
         for (let i = 0; i < size; i++) {
             if (wound_mask[i]) {
                 this.grid[i] = WoundSimulation.CELL_EMPTY;
-                this.wound_resistance[i] = 0.5;
+                this.wound_resistance[i] = 0.8;
             }
         }
 
@@ -443,7 +443,7 @@ class WoundSimulation {
             if (this.metrics.time_to_90 === null && wound_pct >= 90) {
                 this.metrics.time_to_90 = step;
             }
-            if (this.metrics.time_to_100 === null && wound_pct >= 99.5) {
+            if (this.metrics.time_to_100 === null && wound_pct >= 98.0) {
                 this.metrics.time_to_100 = step;
             }
 
@@ -451,7 +451,7 @@ class WoundSimulation {
                 callback(step, wound_pct, this.grid.slice());
             }
 
-            if (wound_pct >= 99.5) {
+            if (wound_pct >= 98.0) {
                 this.metrics.total_steps = step + 1;
                 break;
             }
@@ -459,7 +459,7 @@ class WoundSimulation {
             this.step();
         }
 
-        if (this.metrics.time_to_100 === null && this.get_wound_percentage() >= 99.5) {
+        if (this.metrics.time_to_100 === null && this.get_wound_percentage() >= 98.0) {
             this.metrics.time_to_100 = this.metrics.total_steps;
         }
 

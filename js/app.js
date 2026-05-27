@@ -191,9 +191,9 @@ class App {
 
                 if (time_to_50 === null && wound_pct >= 50) time_to_50 = step;
                 if (time_to_90 === null && wound_pct >= 90) time_to_90 = step;
-                if (time_to_100 === null && wound_pct >= 99.5) time_to_100 = step;
+                if (time_to_100 === null && wound_pct >= 98.0) time_to_100 = step;
 
-                if (wound_pct >= 99.5) {
+                if (wound_pct >= 98.0) {
                     total_steps = step + 1;
                     break;
                 }
@@ -230,9 +230,9 @@ class App {
 
                 if (time_to_50 === null && wound_pct >= 50) time_to_50 = step;
                 if (time_to_90 === null && wound_pct >= 90) time_to_90 = step;
-                if (time_to_100 === null && wound_pct >= 99.5) time_to_100 = step;
+                if (time_to_100 === null && wound_pct >= 98.0) time_to_100 = step;
 
-                if (wound_pct >= 99.5) {
+                if (wound_pct >= 98.0) {
                     total_steps = step + 1;
                     break;
                 }
@@ -240,7 +240,7 @@ class App {
                 step++;
             }
 
-            if (time_to_100 === null && sim.get_wound_percentage() >= 99.5) {
+            if (time_to_100 === null && sim.get_wound_percentage() >= 98.0) {
                 time_to_100 = total_steps;
             }
 

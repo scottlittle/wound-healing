@@ -11,7 +11,8 @@ This project is a browser-based version of the cellular automaton wound healing 
 - **Live simulation visualization**: Watch cells migrate, proliferate, and heal wounds in real-time
 - **Control vs Intention phases**: Run both phases and compare results
 - **Statistical analysis**: Mann-Whitney U test, Cohen's d, bootstrap confidence intervals
-- **Interactive charts**: Healing curves, CDFs, and box plots
+- **Interactive charts**: CDFs and box plots for 90% and 100% closure milestones
+- **Quantum random seeds**: Fetched from ANU QRNG on page load
 
 ## Cell Types
 
@@ -20,8 +21,19 @@ This project is a browser-based version of the cellular automaton wound healing 
 | Empty (wound) | Dark | Target for migration/proliferation |
 | Epithelial | Blue | Migrates into wound, proliferates |
 | Fibroblast | Green | Migrates, deposits ECM, accelerates closure |
-| Immune (macrophage) | Red | Appears at wound edge, resolves after ~10 steps |
+| Immune (macrophage) | Red | Appears at wound edge, resolves after ~20 steps |
 | Healed tissue | Gray | Remodeled, stable |
+
+## Cell Interactions
+
+The simulation includes complex emergent behaviors:
+
+- **Fibroblast chemotaxis**: Fibroblasts migrate faster near immune cells (inflammatory signaling)
+- **Epithelial-fibroblast cooperation**: Epithelial cells adjacent to fibroblasts have 1.5x migration rate (ECM scaffolding)
+- **Immune signaling**: Immune cells within 2-cell radius boost epithelial proliferation by 20%
+- **Contact inhibition**: Epithelial cells with ≥6 non-empty neighbors have 70% reduced activity
+- **Healed tissue barrier**: Adjacent healed cells reduce fibroblast migration by 30% (scar density)
+- **Wound bed resistance**: Empty wound cells start with 80% resistance, decaying on failed attempts
 
 ## Usage
 
@@ -40,6 +52,24 @@ Seeds are fetched from the **ANU Quantum Random Number Generator (QRNG)** on pag
 - If the API is unavailable, falls back to `crypto.getRandomValues()` (OS entropy)
 - The seed source (`ANU_QRNG` or `OS_ENTROPY`) is displayed in the status bar and analysis results
 - Clicking "Reset" fetches a fresh batch of quantum seeds
+
+## Simulation Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| Grid size | 80×80 |
+| Wound radius | 15 |
+| Wound irregularity | 0.5 |
+| Epithelial migration | 0.15 |
+| Epithelial proliferation | 0.08 |
+| Fibroblast migration | 0.12 |
+| Inflammation duration | 20 steps |
+| Immune perimeter | radius + 1 |
+| Immune cell density | 25% of perimeter |
+| Fibroblast density | 5% of wound |
+| Tissue island chance | 5% |
+| Wound bed resistance | 0.8 (initial) |
+| Early termination | 98% closure |
 
 ## Project Structure
 
