@@ -48,7 +48,7 @@ class App {
     }
 
     async fetchQuantumSeeds(n) {
-        const url = `https://corsproxy.io/?${encodeURIComponent(`https://qrng.anu.edu.au/API/jsonI.php?length=${n}&type=uint16`)}`;
+        const url = `https://qrng.anu.edu.au/API/jsonI.php?length=${n}&type=uint16`;
         try {
             const resp = await fetch(url, {
                 headers: { 'User-Agent': 'wound-healing-web/1.0' }
