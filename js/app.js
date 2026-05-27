@@ -24,12 +24,6 @@ class App {
         this.timer = document.getElementById('timer');
 
         this.numRunsInput = document.getElementById('num-runs');
-        this.intentionDurationInput = document.getElementById('intention-duration');
-        this.maxStepsInput = document.getElementById('max-steps');
-
-        this.btnControl.disabled = true;
-        this.btnIntention.disabled = true;
-        this.btnAnalyze.disabled = true;
 
         this.btnControl.addEventListener('click', () => this.runControlPhase());
         this.btnIntention.addEventListener('click', () => this.runIntentionPhase());
@@ -97,7 +91,7 @@ class App {
         this.isRunning = true;
 
         const num_runs = parseInt(this.numRunsInput.value);
-        const max_steps = parseInt(this.maxStepsInput.value);
+        const max_steps = 100;
 
         const total_needed = num_runs * 2;
         if (total_needed > this.all_seeds.length) {
@@ -153,8 +147,8 @@ class App {
         this.isRunning = true;
 
         const num_runs = parseInt(this.numRunsInput.value);
-        const intention_duration = parseInt(this.intentionDurationInput.value);
-        const max_steps = parseInt(this.maxStepsInput.value);
+        const intention_duration = 10;
+        const max_steps = 100;
 
         this.btnControl.disabled = true;
         this.btnIntention.disabled = true;
