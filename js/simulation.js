@@ -117,7 +117,7 @@ class WoundSimulation {
             }
 
             for (let i = 0; i < size; i++) {
-                if (base_wound[i] && wound_mask[i] && this.rng.random() < 0.02) {
+                if (base_wound[i] && wound_mask[i] && this.rng.random() < 0.05) {
                     wound_mask[i] = 0;
                 }
             }
@@ -136,14 +136,14 @@ class WoundSimulation {
         for (let y = 0; y < this.grid_size; y++) {
             for (let x = 0; x < this.grid_size; x++) {
                 const d = dist[this.idx(y, x)];
-                if (d > this.wound_radius && d <= this.wound_radius + 2) {
+                if (d > this.wound_radius && d <= this.wound_radius + 4) {
                     perimeter_indices.push(this.idx(y, x));
                 }
             }
         }
 
         const n_immune = Math.min(
-            Math.floor(perimeter_indices.length * 0.15),
+            Math.floor(perimeter_indices.length * 0.25),
             perimeter_indices.length
         );
         for (let i = perimeter_indices.length - 1; i > 0; i--) {
@@ -162,7 +162,7 @@ class WoundSimulation {
             }
         }
         const n_fibroblast = Math.min(
-            Math.floor(wound_indices.length * 0.02),
+            Math.floor(wound_indices.length * 0.05),
             wound_indices.length
         );
         for (let i = wound_indices.length - 1; i > 0; i--) {
