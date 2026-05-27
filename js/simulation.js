@@ -19,7 +19,7 @@ class WoundSimulation {
     constructor(config = {}) {
         this.grid_size = config.grid_size || 80;
         this.wound_radius = config.wound_radius || 15;
-        this.wound_irregularity = config.wound_irregularity || 0.3;
+        this.wound_irregularity = config.wound_irregularity || 0.5;
         this.p_migrate = config.p_migrate || 0.15;
         this.p_proliferate = config.p_proliferate || 0.08;
         this.p_fibroblast_migrate = config.p_fibroblast_migrate || 0.12;
