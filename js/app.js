@@ -369,16 +369,17 @@ class App {
             ]
         });
 
-        const time_to_50_int = this.intention_results.filter(r => r.time_to_50 !== null).map(r => r.time_to_50);
-        const time_to_50_ctl = this.control_results.filter(r => r.time_to_50 !== null).map(r => r.time_to_50);
-
-        this.curveCanvas.drawCDF('cdf-50', time_to_50_int, time_to_50_ctl, 'CDF: Time to 50% Closure');
-        this.curveCanvas.drawBoxPlot('boxplot-50', time_to_50_int, time_to_50_ctl, 'Time to 50% Closure');
-
         const time_to_90_int = this.intention_results.filter(r => r.time_to_90 !== null).map(r => r.time_to_90);
         const time_to_90_ctl = this.control_results.filter(r => r.time_to_90 !== null).map(r => r.time_to_90);
 
+        this.curveCanvas.drawCDF('cdf-90', time_to_90_int, time_to_90_ctl, 'CDF: Time to 90% Closure');
         this.curveCanvas.drawBoxPlot('boxplot-90', time_to_90_int, time_to_90_ctl, 'Time to 90% Closure');
+
+        const time_to_100_int = this.intention_results.filter(r => r.time_to_100 !== null).map(r => r.time_to_100);
+        const time_to_100_ctl = this.control_results.filter(r => r.time_to_100 !== null).map(r => r.time_to_100);
+
+        this.curveCanvas.drawCDF('cdf-100', time_to_100_int, time_to_100_ctl, 'CDF: Time to 100% Closure');
+        this.curveCanvas.drawBoxPlot('boxplot-100', time_to_100_int, time_to_100_ctl, 'Time to 100% Closure');
     }
 
     displayInterpretation(results) {
@@ -440,7 +441,7 @@ class App {
         const ctx = document.getElementById('healing-curve').getContext('2d');
         ctx.clearRect(0, 0, 400, 200);
 
-        for (const id of ['mean-curves', 'cdf-50', 'boxplot-50', 'boxplot-90']) {
+        for (const id of ['mean-curves', 'cdf-90', 'cdf-100', 'boxplot-90', 'boxplot-100']) {
             const c = document.getElementById(id);
             if (c) c.getContext('2d').clearRect(0, 0, c.width, c.height);
         }
