@@ -31,6 +31,7 @@ class WoundSimulation {
         this.immune_age = new Int16Array(this.grid_size * this.grid_size);
         this.initial_wound_mask = new Uint8Array(this.grid_size * this.grid_size);
         this.current_wound_mask = new Uint8Array(this.grid_size * this.grid_size);
+        this.wound_resistance = new Float32Array(this.grid_size * this.grid_size);
 
         this.metrics = new SimulationMetrics();
         this.metrics.seed = this.seed;
@@ -129,6 +130,7 @@ class WoundSimulation {
         for (let i = 0; i < size; i++) {
             if (wound_mask[i]) {
                 this.grid[i] = WoundSimulation.CELL_EMPTY;
+                this.wound_resistance[i] = 0.5;
             }
         }
 
@@ -207,6 +209,7 @@ class WoundSimulation {
     step() {
         const new_grid = new Uint8Array(this.grid);
         const new_immune_age = new Int16Array(this.immune_age);
+        const resistance_attempts = new Map();
 
         let has_empty = false;
         for (let i = 0; i < this.grid.length; i++) {
@@ -247,7 +250,14 @@ class WoundSimulation {
                 );
                 if (empty_neighbors.length > 0) {
                     const [ny, nx] = empty_neighbors[this.rng.integer(empty_neighbors.length)];
-                    new_grid[this.idx(ny, nx)] = WoundSimulation.CELL_EPITHELIAL;
+                    const tidx = this.idx(ny, nx);
+                    const resistance = this.wound_resistance[tidx];
+                    if (this.rng.random() < (1 - resistance)) {
+                        new_grid[tidx] = WoundSimulation.CELL_EPITHELIAL;
+                        resistance_attempts.set(tidx, 'success');
+                    } else {
+                        resistance_attempts.set(tidx, 'fail');
+                    }
                 }
             }
 
@@ -264,8 +274,15 @@ class WoundSimulation {
                 );
                 if (empty_neighbors.length > 0) {
                     const [ny, nx] = empty_neighbors[this.rng.integer(empty_neighbors.length)];
-                    if (new_grid[this.idx(ny, nx)] === WoundSimulation.CELL_EMPTY) {
-                        new_grid[this.idx(ny, nx)] = WoundSimulation.CELL_EPITHELIAL;
+                    const tidx = this.idx(ny, nx);
+                    if (new_grid[tidx] === WoundSimulation.CELL_EMPTY) {
+                        const resistance = this.wound_resistance[tidx];
+                        if (this.rng.random() < (1 - resistance)) {
+                            new_grid[tidx] = WoundSimulation.CELL_EPITHELIAL;
+                            resistance_attempts.set(tidx, 'success');
+                        } else {
+                            resistance_attempts.set(tidx, 'fail');
+                        }
                     }
                 }
             }
@@ -301,15 +318,27 @@ class WoundSimulation {
                 );
                 if (empty_neighbors.length > 0) {
                     const [ny, nx] = empty_neighbors[this.rng.integer(empty_neighbors.length)];
-                    new_grid[this.idx(ny, nx)] = WoundSimulation.CELL_FIBROBLAST;
+                    const tidx = this.idx(ny, nx);
+                    const resistance = this.wound_resistance[tidx];
+                    if (this.rng.random() < (1 - resistance)) {
+                        new_grid[tidx] = WoundSimulation.CELL_FIBROBLAST;
+                        resistance_attempts.set(tidx, 'success');
+                    } else {
+                        resistance_attempts.set(tidx, 'fail');
+                    }
                 }
             }
 
             const neighbors = this._get_neighbors(y, x);
             for (const [ny, nx] of neighbors) {
                 if (this.grid[this.idx(ny, nx)] === WoundSimulation.CELL_EMPTY) {
-                    if (this.rng.random() < 0.2) {
-                        new_grid[this.idx(ny, nx)] = WoundSimulation.CELL_HEALED;
+                    const tidx = this.idx(ny, nx);
+                    const resistance = this.wound_resistance[tidx];
+                    if (this.rng.random() < 0.2 * (1 - resistance)) {
+                        new_grid[tidx] = WoundSimulation.CELL_HEALED;
+                        resistance_attempts.set(tidx, 'success');
+                    } else if (!resistance_attempts.has(tidx)) {
+                        resistance_attempts.set(tidx, 'fail');
                     }
                 }
             }
@@ -337,10 +366,24 @@ class WoundSimulation {
                 );
                 if (empty_neighbors.length > 0 && this.rng.random() < 0.1) {
                     const [ny, nx] = empty_neighbors[this.rng.integer(empty_neighbors.length)];
-                    const nidx = this.idx(ny, nx);
-                    new_grid[nidx] = WoundSimulation.CELL_IMMUNE;
-                    new_immune_age[nidx] = new_immune_age[idx];
+                    const tidx = this.idx(ny, nx);
+                    const resistance = this.wound_resistance[tidx];
+                    if (this.rng.random() < (1 - resistance)) {
+                        new_grid[tidx] = WoundSimulation.CELL_IMMUNE;
+                        new_immune_age[tidx] = new_immune_age[idx];
+                        resistance_attempts.set(tidx, 'success');
+                    } else {
+                        resistance_attempts.set(tidx, 'fail');
+                    }
                 }
+            }
+        }
+
+        for (const [tidx, result] of resistance_attempts) {
+            if (result === 'success') {
+                this.wound_resistance[tidx] = 0;
+            } else {
+                this.wound_resistance[tidx] *= 0.95;
             }
         }
 
@@ -429,6 +472,7 @@ class WoundSimulation {
         }
         this.rng = this.createRNG(this.seed);
         this.immune_age.fill(0);
+        this.wound_resistance.fill(0);
         this._initialize_grid();
         this.metrics = new SimulationMetrics();
         this.metrics.seed = this.seed;
