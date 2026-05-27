@@ -23,7 +23,7 @@ class WoundSimulation {
         this.p_migrate = config.p_migrate || 0.15;
         this.p_proliferate = config.p_proliferate || 0.08;
         this.p_fibroblast_migrate = config.p_fibroblast_migrate || 0.12;
-        this.t_inflammation = config.t_inflammation || 10;
+        this.t_inflammation = config.t_inflammation || 20;
         this.seed = config.seed || Math.floor(Math.random() * 2147483647);
 
         this.rng = this.createRNG(this.seed);
@@ -136,7 +136,7 @@ class WoundSimulation {
         for (let y = 0; y < this.grid_size; y++) {
             for (let x = 0; x < this.grid_size; x++) {
                 const d = dist[this.idx(y, x)];
-                if (d > this.wound_radius && d <= this.wound_radius + 4) {
+                if (d > this.wound_radius && d <= this.wound_radius + 1) {
                     perimeter_indices.push(this.idx(y, x));
                 }
             }
