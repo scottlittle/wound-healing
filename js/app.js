@@ -4,6 +4,11 @@ class App {
         this.intention_results = [];
         this.control_curves = [];
         this.intention_curves = [];
+        this.all_seeds = [];
+        this.control_seeds = [];
+        this.intention_seeds = [];
+        this.seed_source = '';
+        this.seedsReady = false;
         this.isRunning = false;
         this.controlComplete = false;
         this.intentionComplete = false;
@@ -23,12 +28,48 @@ class App {
         this.intentionDurationInput = document.getElementById('intention-duration');
         this.maxStepsInput = document.getElementById('max-steps');
 
+        this.btnControl.disabled = true;
+        this.btnIntention.disabled = true;
+        this.btnAnalyze.disabled = true;
+
         this.btnControl.addEventListener('click', () => this.runControlPhase());
         this.btnIntention.addEventListener('click', () => this.runIntentionPhase());
         this.btnAnalyze.addEventListener('click', () => this.runAnalysis());
         this.btnReset.addEventListener('click', () => this.reset());
 
         this.drawInitialGrid();
+        this.initSeeds();
+    }
+
+    async initSeeds() {
+        this.setStatus('Fetching quantum random seeds from ANU QRNG...');
+        this.all_seeds = await this.fetchQuantumSeeds(1024);
+        this.seedsReady = true;
+        this.btnControl.disabled = false;
+        this.setStatus(`Ready — ${this.all_seeds.length} quantum seeds loaded (source: ${this.seed_source})`);
+    }
+
+    async fetchQuantumSeeds(n) {
+        const url = `https://qrng.anu.edu.au/API/jsonI.php?length=${n}&type=uint16`;
+        try {
+            const resp = await fetch(url, {
+                headers: { 'User-Agent': 'wound-healing-web/1.0' }
+            });
+            const data = await resp.json();
+            if (data.success && data.data) {
+                this.seed_source = 'ANU_QRNG';
+                return data.data;
+            }
+        } catch (e) {
+            console.log('ANU QRNG unavailable:', e);
+        }
+
+        this.seed_source = 'OS_ENTROPY';
+        const seeds = [];
+        for (let i = 0; i < n; i++) {
+            seeds.push(crypto.getRandomValues(new Uint16Array(1))[0]);
+        }
+        return seeds;
     }
 
     drawInitialGrid() {
@@ -54,11 +95,18 @@ class App {
     }
 
     async runControlPhase() {
-        if (this.isRunning) return;
+        if (this.isRunning || !this.seedsReady) return;
         this.isRunning = true;
 
         const num_runs = parseInt(this.numRunsInput.value);
         const max_steps = parseInt(this.maxStepsInput.value);
+
+        const total_needed = num_runs * 2;
+        if (total_needed > this.all_seeds.length) {
+            this.setStatus(`Not enough seeds. Need ${total_needed}, have ${this.all_seeds.length}. Reduce runs or refresh.`);
+            this.isRunning = false;
+            return;
+        }
 
         this.btnControl.disabled = true;
         this.btnIntention.disabled = true;
@@ -67,10 +115,11 @@ class App {
         this.control_results = [];
         this.control_curves = [];
 
-        this.setStatus('Control Phase Running...');
+        this.control_seeds = this.all_seeds.slice(0, num_runs);
+        this.intention_seeds = this.all_seeds.slice(num_runs, total_needed);
 
         for (let run_idx = 0; run_idx < num_runs; run_idx++) {
-            const seed = Math.floor(Math.random() * 2147483647);
+            const seed = this.control_seeds[run_idx];
             this.setRunCounter(run_idx + 1, num_runs);
 
             const sim = new WoundSimulation({ seed });
@@ -102,7 +151,7 @@ class App {
     }
 
     async runIntentionPhase() {
-        if (this.isRunning) return;
+        if (this.isRunning || !this.seedsReady) return;
         this.isRunning = true;
 
         const num_runs = parseInt(this.numRunsInput.value);
@@ -119,7 +168,7 @@ class App {
         this.setStatus('Intention Phase Running...');
 
         for (let run_idx = 0; run_idx < num_runs; run_idx++) {
-            const seed = Math.floor(Math.random() * 2147483647);
+            const seed = this.intention_seeds[run_idx];
             this.setRunCounter(run_idx + 1, num_runs);
 
             this.setStatus(`Run ${run_idx + 1}/${num_runs} - Apply energy healing now!`);
@@ -144,6 +193,11 @@ class App {
                 if (time_to_90 === null && wound_pct >= 90) time_to_90 = step;
                 if (time_to_100 === null && wound_pct >= 99.5) time_to_100 = step;
 
+                if (wound_pct >= 99.5) {
+                    total_steps = step + 1;
+                    break;
+                }
+
                 sim.step();
                 step++;
                 elapsed = performance.now() - start_time;
@@ -167,7 +221,7 @@ class App {
                     ]
                 });
 
-                await this.sleep(50);
+                await this.sleep(100);
             }
 
             while (step < max_steps) {
@@ -350,20 +404,27 @@ class App {
             html += '<p class="neutral">No statistically significant difference was detected between intention and control groups.</p>';
         }
 
+        html += `<p class="seed-info">Seed source: <strong>${this.seed_source}</strong></p>`;
+
         content.innerHTML = html;
     }
 
-    reset() {
+    async reset() {
         if (this.isRunning) return;
 
         this.control_results = [];
         this.intention_results = [];
         this.control_curves = [];
         this.intention_curves = [];
+        this.all_seeds = [];
+        this.control_seeds = [];
+        this.intention_seeds = [];
+        this.seed_source = '';
+        this.seedsReady = false;
         this.controlComplete = false;
         this.intentionComplete = false;
 
-        this.btnControl.disabled = false;
+        this.btnControl.disabled = true;
         this.btnIntention.disabled = true;
         this.btnAnalyze.disabled = true;
 
@@ -383,6 +444,8 @@ class App {
             const c = document.getElementById(id);
             if (c) c.getContext('2d').clearRect(0, 0, c.width, c.height);
         }
+
+        await this.initSeeds();
     }
 
     sleep(ms) {

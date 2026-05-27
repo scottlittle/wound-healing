@@ -311,3 +311,9 @@ header h1 {
     color: #8b949e;
     margin-top: 10px;
 }
+
+.interpretation .seed-info {
+    color: #8b949e;
+    margin-top: 10px;
+    font-size: 0.9rem;
+}

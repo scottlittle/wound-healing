@@ -26,10 +26,20 @@ This project is a browser-based version of the cellular automaton wound healing 
 ## Usage
 
 1. Open `index.html` in a modern web browser
-2. Configure the number of runs, intention duration, and max steps
-3. Click "Start Control Phase" to run control simulations
-4. Click "Start Intention Phase" and apply energy healing during each run
-5. Click "Run Analysis" to compare results
+2. Wait for quantum seeds to load (fetched automatically from ANU QRNG on page load)
+3. Configure the number of runs, intention duration, and max steps
+4. Click "Start Control Phase" to run control simulations
+5. Click "Start Intention Phase" and apply energy healing during each run
+6. Click "Run Analysis" to compare results
+
+## Quantum Random Number Generation
+
+Seeds are fetched from the **ANU Quantum Random Number Generator (QRNG)** on page load. The API provides up to 1024 random numbers in a single call, which are stored and used for all runs in the session. This avoids rate limiting (1 minute wait between calls).
+
+- API: `https://qrng.anu.edu.au/API/jsonI.php?length=1024&type=uint16`
+- If the API is unavailable, falls back to `crypto.getRandomValues()` (OS entropy)
+- The seed source (`ANU_QRNG` or `OS_ENTROPY`) is displayed in the status bar and analysis results
+- Clicking "Reset" fetches a fresh batch of quantum seeds
 
 ## Project Structure
 
