@@ -29,6 +29,13 @@ class App {
         this.btnIntention.addEventListener('click', () => this.runIntentionPhase());
         this.btnAnalyze.addEventListener('click', () => this.runAnalysis());
 
+        document.getElementById('info-btn').addEventListener('click', () => {
+            document.getElementById('info-modal').classList.remove('hidden');
+        });
+        document.getElementById('info-close').addEventListener('click', () => {
+            document.getElementById('info-modal').classList.add('hidden');
+        });
+
         this.drawInitialGrid();
         this.initSeeds();
     }

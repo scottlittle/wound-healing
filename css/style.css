@@ -96,6 +96,79 @@ header h1 {
     margin-bottom: 15px;
 }
 
+.title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.info-btn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 50%;
+    transition: background 0.2s;
+}
+
+.info-btn:hover {
+    background: rgba(88, 166, 255, 0.1);
+}
+
+.info-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10001;
+}
+
+.info-modal.hidden {
+    display: none;
+}
+
+.info-content {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 12px;
+    padding: 30px;
+    max-width: 450px;
+    width: 90%;
+}
+
+.info-content h3 {
+    color: #58a6ff;
+    margin-bottom: 15px;
+}
+
+.info-content ol {
+    padding-left: 20px;
+    margin-bottom: 15px;
+}
+
+.info-content li {
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.timing-note {
+    background: #0d1117;
+    padding: 12px 15px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+}
+
+.timing-note strong {
+    color: #58a6ff;
+}
+
 .run-info {
     display: flex;
     gap: 15px;
