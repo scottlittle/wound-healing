@@ -112,6 +112,7 @@ header h1 {
     transition: background 0.2s;
     line-height: 1;
     vertical-align: middle;
+    margin-top: -4px;
 }
 
 .info-btn:hover {
