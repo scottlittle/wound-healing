@@ -40,20 +40,18 @@ The simulation includes complex emergent behaviors:
 ## Usage
 
 1. Open `index.html` in a modern web browser
-2. Wait for quantum seeds to load (fetched automatically from ANU QRNG on page load)
-3. Configure the number of runs, intention duration, and max steps
-4. Click "Start Control Phase" to run control simulations
-5. Click "Start Intention Phase" and apply energy healing during each run
-6. Click "Run Analysis" to compare results
+2. Wait for random seeds to load (fetched automatically on page load)
+3. Configure the number of runs per phase
+4. Click "Start Intention Phase" and apply energy healing during each run
+5. Click "Run Analysis" to automatically run the control phase and compare results
 
-## Quantum Random Number Generation
+## Random Seeds
 
-Seeds are fetched from the **ANU Quantum Random Number Generator (QRNG)** on page load. The API provides up to 1024 random numbers in a single call, which are stored and used for all runs in the session. This avoids rate limiting (1 minute wait between calls).
+Random seeds are fetched from the **ANU Quantum Random Number Generator (QRNG)** on page load. The API provides up to 1024 random numbers in a single call, which are stored and used for all runs in the session. This avoids rate limiting (1 minute wait between calls).
 
 - API: `https://qrng.anu.edu.au/API/jsonI.php?length=1024&type=uint16`
-- If the API is unavailable, falls back to `crypto.getRandomValues()` (OS entropy)
-- The seed source (`ANU_QRNG` or `OS_ENTROPY`) is displayed in the status bar and analysis results
-- Clicking "Reset" fetches a fresh batch of quantum seeds
+- If the API is unavailable, falls back to `crypto.getRandomValues()` (system random)
+- The seed source (`QUANTUM` or `SYSTEM`) is displayed in the status bar and analysis results
 
 ## Simulation Parameters
 

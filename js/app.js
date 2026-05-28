@@ -44,8 +44,8 @@ class App {
         this.setStatus('Fetching random seeds...');
         this.all_seeds = await this.fetchQuantumSeeds(1024);
         this.seedsReady = true;
-        this.btnControl.disabled = false;
-        this.setStatus(`Ready — random seeds loaded (source: ${this.seed_source}). Proceed to control phase.`);
+        this.btnIntention.disabled = false;
+        this.setStatus(`Ready — random seeds loaded (source: ${this.seed_source}). Proceed to intention phase.`);
     }
 
     async fetchQuantumSeeds(n) {
@@ -251,15 +251,61 @@ class App {
         this.intentionComplete = true;
         this.btnAnalyze.disabled = false;
         this.isRunning = false;
-        this.setStatus('Intention Phase Complete! Run analysis to compare results.');
+        this.setStatus('Intention Phase Complete! Click "Run Analysis" to run control phase and compare results.');
     }
 
-    runAnalysis() {
-        if (this.intention_results.length === 0 || this.control_results.length === 0) {
-            this.setStatus('ERROR: Both phases must be completed before analysis.');
+    async runAnalysis() {
+        if (this.intention_results.length === 0) {
+            this.setStatus('ERROR: Intention phase must be completed first.');
             return;
         }
 
+        this.btnControl.disabled = true;
+        this.btnIntention.disabled = true;
+        this.btnAnalyze.disabled = true;
+
+        const num_runs = this.intention_results.length;
+        const max_steps = 100;
+
+        const total_needed = num_runs * 2;
+        if (total_needed > this.all_seeds.length) {
+            this.setStatus(`Not enough seeds. Need ${total_needed}, have ${this.all_seeds.length}. Reduce runs or refresh.`);
+            this.isRunning = false;
+            return;
+        }
+
+        this.control_results = [];
+        this.control_curves = [];
+
+        const offset = num_runs;
+        const control_seeds = this.all_seeds.slice(offset, offset + num_runs);
+
+        for (let run_idx = 0; run_idx < num_runs; run_idx++) {
+            const seed = control_seeds[run_idx];
+            this.setRunCounter(run_idx + 1, num_runs);
+
+            const sim = new WoundSimulation({ seed });
+            sim.run(max_steps);
+
+            const result = {
+                run_id: run_idx + 1,
+                seed: seed,
+                time_to_50: sim.metrics.time_to_50,
+                time_to_90: sim.metrics.time_to_90,
+                time_to_100: sim.metrics.time_to_100,
+                total_steps: sim.metrics.total_steps,
+                healing_curve: sim.metrics.healing_curve,
+            };
+
+            this.control_results.push(result);
+            this.control_curves.push(sim.metrics.healing_curve);
+
+            this.setStatus(`Control run ${run_idx + 1}/${num_runs} complete`);
+
+            await this.sleep(10);
+        }
+
+        this.controlComplete = true;
         this.setStatus('Running statistical analysis...');
 
         const results = Analysis.statisticalAnalysis(this.intention_results, this.control_results, 10000);
