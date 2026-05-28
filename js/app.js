@@ -319,7 +319,7 @@ class App {
         this.displayCharts();
         this.displayInterpretation(results);
 
-        this.setStatus('Analysis complete!');
+        this.setStatus('Analysis complete! Scroll down to see results.');
     }
 
     displayStatsTable(results) {
