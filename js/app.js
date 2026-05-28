@@ -41,11 +41,11 @@ class App {
     }
 
     async initSeeds() {
-        this.setStatus('Fetching quantum random seeds from ANU QRNG...');
+        this.setStatus('Fetching random seeds...');
         this.all_seeds = await this.fetchQuantumSeeds(1024);
         this.seedsReady = true;
         this.btnControl.disabled = false;
-        this.setStatus(`Ready — ${this.all_seeds.length} quantum seeds loaded (source: ${this.seed_source}). Proceed to control phase.`);
+        this.setStatus(`Ready — ${this.all_seeds.length} random seeds loaded (source: ${this.seed_source}). Proceed to control phase.`);
     }
 
     async fetchQuantumSeeds(n) {
@@ -56,14 +56,14 @@ class App {
             });
             const data = await resp.json();
             if (data.success && data.data) {
-                this.seed_source = 'ANU_QRNG';
+                this.seed_source = 'QUANTUM';
                 return data.data;
             }
         } catch (e) {
             console.log('ANU QRNG unavailable:', e);
         }
 
-        this.seed_source = 'OS_ENTROPY';
+        this.seed_source = 'SYSTEM';
         const seeds = [];
         for (let i = 0; i < n; i++) {
             seeds.push(crypto.getRandomValues(new Uint16Array(1))[0]);
