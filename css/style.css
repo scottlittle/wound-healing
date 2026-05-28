@@ -105,11 +105,13 @@ header h1 {
 .info-btn {
     background: none;
     border: none;
-    font-size: 1.2rem;
+    font-size: 0.9rem;
     cursor: pointer;
-    padding: 4px 8px;
+    padding: 2px 6px;
     border-radius: 50%;
     transition: background 0.2s;
+    line-height: 1;
+    vertical-align: middle;
 }
 
 .info-btn:hover {
