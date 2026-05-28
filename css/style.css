@@ -160,6 +160,15 @@ header h1 {
     line-height: 1.5;
 }
 
+.info-content a {
+    color: #58a6ff;
+    text-decoration: none;
+}
+
+.info-content a:hover {
+    text-decoration: underline;
+}
+
 .timing-note {
     background: #0d1117;
     padding: 12px 15px;
