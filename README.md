@@ -2,6 +2,8 @@
 
 A static web app implementing an energy healing wound healing simulation experiment.
 
+**[Live Demo](https://wound-healing.pages.dev/)**
+
 ## Overview
 
 This project is a browser-based version of the cellular automaton wound healing simulation. It allows users to run controlled experiments testing whether focused intention can influence wound healing outcomes.
