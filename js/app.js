@@ -38,7 +38,7 @@ class App {
         this.all_seeds = await this.fetchQuantumSeeds(1024);
         this.seedsReady = true;
         this.btnControl.disabled = false;
-        this.setStatus(`Ready — ${this.all_seeds.length} quantum seeds loaded (source: ${this.seed_source})`);
+        this.setStatus(`Ready — ${this.all_seeds.length} quantum seeds loaded (source: ${this.seed_source}). Proceed to control phase.`);
     }
 
     async fetchQuantumSeeds(n) {
