@@ -71,6 +71,30 @@ Random seeds are fetched from the **ANU Quantum Random Number Generator (QRNG)**
 | Wound bed resistance | 0.8 (initial) |
 | Early termination | 98% closure |
 
+## Statistical Analysis
+
+The analysis compares the Intention phase (with energy healing) against the Control phase (no healing) using several statistical methods:
+
+### Methods
+
+- **Mann-Whitney U Test**: A non-parametric test comparing the distributions of time-to-closure metrics between groups. Does not assume normal distribution, making it suitable for simulation data. Significance threshold: p < 0.05.
+- **Cohen's d**: Measures effect size (standardized difference between means). Interpretation: < 0.2 = negligible, 0.2-0.5 = small, 0.5-0.8 = medium, > 0.8 = large.
+- **Bootstrap Confidence Intervals**: 10,000 bootstrap resamples to estimate 95% CI for the difference in means between groups.
+
+### Metrics Tracked
+
+| Metric | Description |
+|--------|-------------|
+| Time to 50% | Steps until wound is 50% closed |
+| Time to 90% | Steps until wound is 90% closed |
+| Time to 100% | Steps until wound reaches 98% closure (early termination) |
+
+### Interpretation
+
+- **Significant result (p < 0.05)**: The intention and control groups show a statistically detectable difference. Check the direction (faster/slower) and effect size to understand the magnitude.
+- **Non-significant result**: No statistical evidence of a difference was detected. This does not prove the groups are identical; it may indicate insufficient sample size or a very small effect.
+- **Confidence intervals**: If the 95% CI for the difference does not include zero, this supports a meaningful difference between groups.
+
 ## Project Structure
 
 ```
