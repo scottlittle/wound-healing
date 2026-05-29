@@ -129,7 +129,7 @@ class App {
                 seed: seed,
                 time_to_50: sim.metrics.time_to_50,
                 time_to_90: sim.metrics.time_to_90,
-                time_to_98: sim.metrics.time_to_98,
+                time_to_100: sim.metrics.time_to_100,
                 total_time: sim.metrics.total_time,
                 healing_curve: sim.metrics.healing_curve,
             };
@@ -154,7 +154,6 @@ class App {
         this.isRunning = true;
 
         const num_runs = parseInt(this.numRunsInput.value);
-        const intention_duration = 10;
         const max_steps = 100;
 
         this.btnControl.disabled = true;
@@ -177,37 +176,10 @@ class App {
             const healing_curve = [];
             let time_to_50 = null;
             let time_to_90 = null;
-            let time_to_98 = null;
+            let time_to_100 = null;
             let total_time = 0;
 
-            const start_time = performance.now();
             let step = 0;
-            let elapsed = 0;
-
-            while (elapsed < intention_duration * 1000 && step < max_steps) {
-                const wound_pct = sim.get_wound_percentage();
-                healing_curve.push(wound_pct);
-
-                if (time_to_50 === null && wound_pct >= 50) time_to_50 = step;
-                if (time_to_90 === null && wound_pct >= 90) time_to_90 = step;
-                if (time_to_98 === null && wound_pct >= 98.0) time_to_98 = step;
-
-                if (wound_pct >= 98.0) {
-                    total_time = step + 1;
-                    break;
-                }
-
-                sim.step();
-                step++;
-                elapsed = performance.now() - start_time;
-
-                const remaining = Math.max(0, intention_duration - Math.floor(elapsed / 1000));
-                this.showTimer(`${remaining}s remaining | Step ${step} | ${wound_pct.toFixed(1)}% closed`);
-
-                this.simCanvas.renderGrid(sim.grid, sim.grid_size, `Run ${run_idx + 1}`);
-
-                await this.sleep(100);
-            }
 
             while (step < max_steps) {
                 const wound_pct = sim.get_wound_percentage();
@@ -215,18 +187,28 @@ class App {
 
                 if (time_to_50 === null && wound_pct >= 50) time_to_50 = step;
                 if (time_to_90 === null && wound_pct >= 90) time_to_90 = step;
-                if (time_to_98 === null && wound_pct >= 98.0) time_to_98 = step;
+                if (time_to_100 === null && wound_pct >= 99.9) time_to_100 = step;
 
-                if (wound_pct >= 98.0) {
+                if (wound_pct >= 99.9) {
                     total_time = step + 1;
                     break;
                 }
+
                 sim.step();
                 step++;
+
+                this.showTimer(`Step ${step} | ${wound_pct.toFixed(1)}% closed`);
+                this.simCanvas.renderGrid(sim.grid, sim.grid_size, `Run ${run_idx + 1}`);
+
+                await this.sleep(100);
             }
 
-            if (time_to_98 === null && sim.get_wound_percentage() >= 98.0) {
-                time_to_98 = total_time;
+            if (total_time === 0) {
+                total_time = max_steps;
+            }
+
+            if (time_to_100 === null && sim.get_wound_percentage() >= 99.9) {
+                time_to_100 = total_time;
             }
 
             const result = {
@@ -234,7 +216,7 @@ class App {
                 seed: seed,
                 time_to_50,
                 time_to_90,
-                time_to_98,
+                time_to_100,
                 total_time,
                 healing_curve,
             };
@@ -242,7 +224,7 @@ class App {
             this.intention_results.push(result);
             this.intention_curves.push(healing_curve);
 
-            this.setStatus(`Run ${run_idx + 1} complete | 50%: ${time_to_50 ?? '-'} | 90%: ${time_to_90 ?? '-'} | 98%: ${time_to_98 ?? '-'}`);
+            this.setStatus(`Run ${run_idx + 1} complete | 50%: ${time_to_50 ?? '-'} | 90%: ${time_to_90 ?? '-'} | 100%: ${time_to_100 ?? '-'}`);
             this.hideTimer();
 
             await this.sleep(500);
@@ -292,7 +274,7 @@ class App {
                 seed: seed,
                 time_to_50: sim.metrics.time_to_50,
                 time_to_90: sim.metrics.time_to_90,
-                time_to_98: sim.metrics.time_to_98,
+                time_to_100: sim.metrics.time_to_100,
                 total_time: sim.metrics.total_time,
                 healing_curve: sim.metrics.healing_curve,
             };
@@ -409,10 +391,10 @@ class App {
     }
 
     resultsToCSV(results, phase) {
-        const headers = ['run_id', 'seed', 'time_to_50', 'time_to_90', 'time_to_98', 'total_time'];
+        const headers = ['run_id', 'seed', 'time_to_50', 'time_to_90', 'time_to_100', 'total_time'];
         let csv = headers.join(',') + '\n';
         for (const r of results) {
-            csv += `${r.run_id},${r.seed},${r.time_to_50 ?? ''},${r.time_to_90 ?? ''},${r.time_to_98 ?? ''},${r.total_time}\n`;
+            csv += `${r.run_id},${r.seed},${r.time_to_50 ?? ''},${r.time_to_90 ?? ''},${r.time_to_100 ?? ''},${r.total_time}\n`;
         }
         return csv;
     }
