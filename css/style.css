@@ -338,12 +338,15 @@ header h1 {
     font-size: 0.95rem;
 }
 
+#status-text {
+    margin-bottom: 8px;
+}
+
 .companion-display {
     font-family: monospace;
     font-size: 0.7rem;
     white-space: pre;
     text-align: center;
-    margin-top: 10px;
     color: #8b949e;
     line-height: 1.2;
     min-height: 60px;

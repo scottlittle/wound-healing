@@ -77,7 +77,7 @@ class App {
     }
 
     setStatus(text) {
-        this.status.textContent = text;
+        document.getElementById('status-text').textContent = text;
     }
 
     setRunCounter(current, total) {
