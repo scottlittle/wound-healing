@@ -2,6 +2,7 @@ class SimulationMetrics {
     constructor() {
         this.time_to_50 = null;
         this.time_to_90 = null;
+        this.time_to_99 = null;
         this.time_to_100 = null;
         this.healing_curve = [];
         this.total_time = 0;
@@ -458,6 +459,9 @@ class WoundSimulation {
             }
             if (this.metrics.time_to_90 === null && wound_pct >= 90) {
                 this.metrics.time_to_90 = step;
+            }
+            if (this.metrics.time_to_99 === null && wound_pct >= 99.0) {
+                this.metrics.time_to_99 = step;
             }
             if (this.metrics.time_to_100 === null && wound_pct >= 99.9) {
                 this.metrics.time_to_100 = step;

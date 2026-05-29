@@ -87,6 +87,7 @@ The analysis compares the Intention phase (with energy healing) against the Cont
 |--------|-------------|
 | Time to 50% | Steps until wound is 50% closed |
 | Time to 90% | Steps until wound is 90% closed |
+| Time to 99% | Steps until wound reaches 99% closure (primary analysis metric) |
 | Time to 100% | Steps until wound reaches 99.9% closure |
 | Total Time | Full simulation duration (runs until wound fully heals or max steps) |
 

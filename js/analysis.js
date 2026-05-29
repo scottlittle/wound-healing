@@ -252,7 +252,7 @@ class Analysis {
 
         const results = [];
 
-        for (const metric_name of ['time_to_50', 'time_to_90', 'total_time']) {
+        for (const metric_name of ['time_to_50', 'time_to_90', 'time_to_99']) {
             const intention_vals = intention_metrics[metric_name];
             const control_vals = control_metrics[metric_name];
 

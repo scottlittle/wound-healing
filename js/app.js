@@ -14,7 +14,7 @@ class App {
         this.intentionComplete = false;
 
         this.simCanvas = new Visualizer('sim-canvas');
-        this.resultsCanvas = new Visualizer('cdf-total');
+        this.resultsCanvas = new Visualizer('cdf-99');
 
         this.btnControl = document.getElementById('btn-control');
         this.btnIntention = document.getElementById('btn-intention');
@@ -129,6 +129,7 @@ class App {
                 seed: seed,
                 time_to_50: sim.metrics.time_to_50,
                 time_to_90: sim.metrics.time_to_90,
+                time_to_99: sim.metrics.time_to_99,
                 time_to_100: sim.metrics.time_to_100,
                 total_time: sim.metrics.total_time,
                 healing_curve: sim.metrics.healing_curve,
@@ -176,6 +177,7 @@ class App {
             const healing_curve = [];
             let time_to_50 = null;
             let time_to_90 = null;
+            let time_to_99 = null;
             let time_to_100 = null;
             let total_time = 0;
 
@@ -187,6 +189,7 @@ class App {
 
                 if (time_to_50 === null && wound_pct >= 50) time_to_50 = step;
                 if (time_to_90 === null && wound_pct >= 90) time_to_90 = step;
+                if (time_to_99 === null && wound_pct >= 99.0) time_to_99 = step;
                 if (time_to_100 === null && wound_pct >= 99.9) time_to_100 = step;
 
                 if (wound_pct >= 99.9) {
@@ -209,6 +212,9 @@ class App {
                 total_time = max_steps;
             }
 
+            if (time_to_99 === null && sim.get_wound_percentage() >= 99.0) {
+                time_to_99 = total_time;
+            }
             if (time_to_100 === null && sim.get_wound_percentage() >= 99.9) {
                 time_to_100 = total_time;
             }
@@ -218,6 +224,7 @@ class App {
                 seed: seed,
                 time_to_50,
                 time_to_90,
+                time_to_99,
                 time_to_100,
                 total_time,
                 healing_curve,
@@ -276,6 +283,7 @@ class App {
                 seed: seed,
                 time_to_50: sim.metrics.time_to_50,
                 time_to_90: sim.metrics.time_to_90,
+                time_to_99: sim.metrics.time_to_99,
                 time_to_100: sim.metrics.time_to_100,
                 total_time: sim.metrics.total_time,
                 healing_curve: sim.metrics.healing_curve,
@@ -331,11 +339,11 @@ class App {
     }
 
     displayCharts() {
-        const total_time_int = this.intention_results.filter(r => r.total_time !== null).map(r => r.total_time);
-        const total_time_ctl = this.control_results.filter(r => r.total_time !== null).map(r => r.total_time);
+        const time_to_99_int = this.intention_results.filter(r => r.time_to_99 !== null).map(r => r.time_to_99);
+        const time_to_99_ctl = this.control_results.filter(r => r.time_to_99 !== null).map(r => r.time_to_99);
 
-        this.resultsCanvas.drawCDF('cdf-total', total_time_int, total_time_ctl, 'CDF: Total Time');
-        this.resultsCanvas.drawBoxPlot('boxplot-total', total_time_int, total_time_ctl, 'Total Time');
+        this.resultsCanvas.drawCDF('cdf-99', time_to_99_int, time_to_99_ctl, 'CDF: Time to 99% Closure');
+        this.resultsCanvas.drawBoxPlot('boxplot-99', time_to_99_int, time_to_99_ctl, 'Time to 99% Closure');
     }
 
     displayInterpretation(results) {
@@ -393,10 +401,10 @@ class App {
     }
 
     resultsToCSV(results, phase) {
-        const headers = ['run_id', 'seed', 'time_to_50', 'time_to_90', 'time_to_100', 'total_time'];
+        const headers = ['run_id', 'seed', 'time_to_50', 'time_to_90', 'time_to_99', 'time_to_100', 'total_time'];
         let csv = headers.join(',') + '\n';
         for (const r of results) {
-            csv += `${r.run_id},${r.seed},${r.time_to_50 ?? ''},${r.time_to_90 ?? ''},${r.time_to_100 ?? ''},${r.total_time}\n`;
+            csv += `${r.run_id},${r.seed},${r.time_to_50 ?? ''},${r.time_to_90 ?? ''},${r.time_to_99 ?? ''},${r.time_to_100 ?? ''},${r.total_time}\n`;
         }
         return csv;
     }
