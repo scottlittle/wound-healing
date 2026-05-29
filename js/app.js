@@ -318,6 +318,7 @@ class App {
         this.displayStatsTable(results);
         this.displayCharts();
         this.displayInterpretation(results);
+        this.showDownloadButton(results);
 
         this.setStatus('Analysis complete! Scroll down to see results.');
     }
@@ -378,6 +379,50 @@ class App {
         html += `<p class="seed-info">Seed source: <strong>${this.seed_source}</strong></p>`;
 
         content.innerHTML = html;
+    }
+
+    showDownloadButton(stats) {
+        const btn = document.getElementById('btn-download');
+        btn.style.display = 'inline-block';
+        btn.onclick = () => this.downloadResults(stats);
+    }
+
+    async downloadResults(stats) {
+        const zip = new JSZip();
+
+        const intentionCSV = this.resultsToCSV(this.intention_results, 'intention');
+        const controlCSV = this.resultsToCSV(this.control_results, 'control');
+        const statsCSV = this.statsToCSV(stats);
+
+        zip.file('intention_results.csv', intentionCSV);
+        zip.file('control_results.csv', controlCSV);
+        zip.file('statistical_analysis.csv', statsCSV);
+
+        const blob = await zip.generateAsync({ type: 'blob' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `wound-healing-results-${Date.now()}.zip`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    resultsToCSV(results, phase) {
+        const headers = ['run_id', 'seed', 'time_to_50', 'time_to_90', 'time_to_100', 'total_steps'];
+        let csv = headers.join(',') + '\n';
+        for (const r of results) {
+            csv += `${r.run_id},${r.seed},${r.time_to_50 ?? ''},${r.time_to_90 ?? ''},${r.time_to_100 ?? ''},${r.total_steps}\n`;
+        }
+        return csv;
+    }
+
+    statsToCSV(stats) {
+        const headers = ['metric', 'intention_mean', 'control_mean', 'p_value', 'cohens_d', 'significant', 'ci_low', 'ci_high'];
+        let csv = headers.join(',') + '\n';
+        for (const r of stats) {
+            csv += `${r.metric_name},${r.intention_mean.toFixed(4)},${r.control_mean.toFixed(4)},${r.p_mann_whitney.toFixed(6)},${r.cohens_d.toFixed(4)},${r.significant_at_005},${r.bootstrap_ci_low.toFixed(4)},${r.bootstrap_ci_high.toFixed(4)}\n`;
+        }
+        return csv;
     }
 
     sleep(ms) {

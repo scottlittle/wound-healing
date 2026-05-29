@@ -320,6 +320,16 @@ header h1 {
     background: #bb8009;
 }
 
+.btn-download {
+    background: #8957e5;
+    color: white;
+    margin-top: 15px;
+}
+
+.btn-download:hover {
+    background: #a371f7;
+}
+
 .status {
     padding: 12px 15px;
     background: #0d1117;
