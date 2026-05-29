@@ -1,13 +1,11 @@
 class StatisticalResult {
-    constructor(metric_name, intention_mean, control_mean, mann_whitney_u, p_mann_whitney, t_statistic, p_ttest, cohens_d, significant_at_005, significant_at_001, bootstrap_ci_low, bootstrap_ci_high) {
+    constructor(metric_name, intention_mean, control_mean, p_value, cohens_d, percent_faster, significant_at_005, significant_at_001, bootstrap_ci_low, bootstrap_ci_high) {
         this.metric_name = metric_name;
         this.intention_mean = intention_mean;
         this.control_mean = control_mean;
-        this.mann_whitney_u = mann_whitney_u;
-        this.p_mann_whitney = p_mann_whitney;
-        this.t_statistic = t_statistic;
-        this.p_ttest = p_ttest;
+        this.p_value = p_value;
         this.cohens_d = cohens_d;
+        this.percent_faster = percent_faster;
         this.significant_at_005 = significant_at_005;
         this.significant_at_001 = significant_at_001;
         this.bootstrap_ci_low = bootstrap_ci_low;
@@ -216,12 +214,15 @@ class Analysis {
     static bootstrapCI(group1, group2, n_bootstrap = 10000, confidence = 0.95) {
         const rng = new Analysis.SimpleRNG(42);
 
-        const observed_diff = group1.reduce((a, b) => a + b, 0) / group1.length -
-                              group2.reduce((a, b) => a + b, 0) / group2.length;
+        const log1 = group1.map(x => Math.log(x));
+        const log2 = group2.map(x => Math.log(x));
 
-        const combined = [...group1, ...group2];
-        const n1 = group1.length;
-        const n2 = group2.length;
+        const observed_diff = log1.reduce((a, b) => a + b, 0) / log1.length -
+                              log2.reduce((a, b) => a + b, 0) / log2.length;
+
+        const combined = [...log1, ...log2];
+        const n1 = log1.length;
+        const n2 = log2.length;
 
         const bootstrap_diffs = [];
         for (let i = 0; i < n_bootstrap; i++) {
@@ -256,29 +257,34 @@ class Analysis {
 
             if (intention_vals.length < 3 || control_vals.length < 3) continue;
 
-            const mw = Analysis.mannWhitneyU(intention_vals, control_vals);
-            const tt = Analysis.tTest(intention_vals, control_vals);
-            const d = Analysis.cohensD(intention_vals, control_vals);
-            const ci = Analysis.bootstrapCI(intention_vals, control_vals, n_bootstrap);
+            const intention_log = intention_vals.map(x => Math.log(x));
+            const control_log = control_vals.map(x => Math.log(x));
 
-            const p_combined = Math.min(mw.p_value, tt.p);
+            const tt = Analysis.tTest(intention_log, control_log);
+            const d = Analysis.cohensD(intention_log, control_log);
+            const ci = Analysis.bootstrapCI(intention_vals, control_vals, n_bootstrap);
 
             const intention_mean = intention_vals.reduce((a, b) => a + b, 0) / intention_vals.length;
             const control_mean = control_vals.reduce((a, b) => a + b, 0) / control_vals.length;
+
+            const log_mean_diff = control_log.reduce((a, b) => a + b, 0) / control_log.length -
+                                  intention_log.reduce((a, b) => a + b, 0) / intention_log.length;
+            const percent_faster = (1 - Math.exp(-log_mean_diff)) * 100;
+
+            const ci_ratio_low = Math.exp(ci.ci_low);
+            const ci_ratio_high = Math.exp(ci.ci_high);
 
             results.push(new StatisticalResult(
                 metric_name,
                 intention_mean,
                 control_mean,
-                mw.U,
-                mw.p_value,
-                tt.t,
                 tt.p,
                 d,
-                mw.p_value < 0.05,
-                mw.p_value < 0.01,
-                ci.ci_low,
-                ci.ci_high
+                percent_faster,
+                tt.p < 0.05,
+                tt.p < 0.01,
+                ci_ratio_low,
+                ci_ratio_high
             ));
         }
 

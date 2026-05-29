@@ -12,7 +12,7 @@ This project is a browser-based version of the cellular automaton wound healing 
 
 - **Live simulation visualization**: Watch cells migrate, proliferate, and heal wounds in real-time
 - **Control vs Intention phases**: Run both phases and compare results
-- **Statistical analysis**: Mann-Whitney U test, Cohen's d, bootstrap confidence intervals
+- **Statistical analysis**: Log-transformed t-test, Cohen's d, bootstrap confidence intervals, percent faster
 - **Interactive charts**: CDFs and box plots for 90% and 100% closure milestones
 - **Quantum random seeds**: Fetched from ANU QRNG on page load
 
@@ -77,9 +77,9 @@ The analysis compares the Intention phase (with energy healing) against the Cont
 
 ### Methods
 
-- **Mann-Whitney U Test**: A non-parametric test comparing the distributions of time-to-closure metrics between groups. Does not assume normal distribution, making it suitable for simulation data. Significance threshold: p < 0.05.
-- **Cohen's d**: Measures effect size (standardized difference between means). Interpretation: < 0.2 = negligible, 0.2-0.5 = small, 0.5-0.8 = medium, > 0.8 = large.
-- **Bootstrap Confidence Intervals**: 10,000 bootstrap resamples to estimate 95% CI for the difference in means between groups.
+- **Log-Transformed T-Test**: Time-to-closure data is log-transformed before applying a two-sample t-test (Welch's). This handles the right-skewed distribution typical of time-to-event data and tests for multiplicative effects (e.g., "X% faster"). The log transform improves normality and statistical power.
+- **Cohen's d**: Measures effect size on the log scale. Interpretation: < 0.2 = negligible, 0.2-0.5 = small, 0.5-0.8 = medium, > 0.8 = large.
+- **Bootstrap Confidence Intervals**: 10,000 bootstrap resamples on log-transformed data to estimate 95% CI for the ratio of geometric means. Back-transformed to ratio scale for interpretation.
 
 ### Metrics Tracked
 
@@ -91,9 +91,9 @@ The analysis compares the Intention phase (with energy healing) against the Cont
 
 ### Interpretation
 
-- **Significant result (p < 0.05)**: The intention and control groups show a statistically detectable difference. Check the direction (faster/slower) and effect size to understand the magnitude.
+- **Significant result (p < 0.05)**: The intention and control groups show a statistically detectable difference. Check the "% Faster" column to see the magnitude — e.g., "18% faster" means intention took 82% of the control time.
 - **Non-significant result**: No statistical evidence of a difference was detected. This does not prove the groups are identical; it may indicate insufficient sample size or a very small effect.
-- **Confidence intervals**: If the 95% CI for the difference does not include zero, this supports a meaningful difference between groups.
+- **Confidence intervals**: The 95% CI is expressed as a ratio. If the interval does not include 1.0, this supports a meaningful difference. For example, [0.75, 0.92] means intention was likely 8-25% faster.
 
 ## Project Structure
 
