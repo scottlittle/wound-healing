@@ -200,7 +200,9 @@ class App {
                 this.showTimer(`Step ${step} | ${wound_pct.toFixed(1)}% closed`);
                 this.simCanvas.renderGrid(sim.grid, sim.grid_size, `Run ${run_idx + 1}`);
 
-                await this.sleep(100);
+                if (wound_pct < 98.0) {
+                    await this.sleep(100);
+                }
             }
 
             if (total_time === 0) {
