@@ -18,8 +18,7 @@ class Analysis {
         const metrics = {
             time_to_50: [],
             time_to_90: [],
-            time_to_98: [],
-            total_time: [],
+            time_to_99: [],
         };
 
         for (const result of results) {
