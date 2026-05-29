@@ -2,9 +2,9 @@ class SimulationMetrics {
     constructor() {
         this.time_to_50 = null;
         this.time_to_90 = null;
-        this.time_to_100 = null;
+        this.time_to_98 = null;
         this.healing_curve = [];
-        this.total_steps = 0;
+        this.total_time = 0;
         this.seed = 0;
     }
 }
@@ -459,8 +459,8 @@ class WoundSimulation {
             if (this.metrics.time_to_90 === null && wound_pct >= 90) {
                 this.metrics.time_to_90 = step;
             }
-            if (this.metrics.time_to_100 === null && wound_pct >= 98.0) {
-                this.metrics.time_to_100 = step;
+            if (this.metrics.time_to_98 === null && wound_pct >= 98.0) {
+                this.metrics.time_to_98 = step;
             }
 
             if (callback) {
@@ -468,15 +468,15 @@ class WoundSimulation {
             }
 
             if (wound_pct >= 98.0) {
-                this.metrics.total_steps = step + 1;
+                this.metrics.total_time = step + 1;
                 break;
             }
 
             this.step();
         }
 
-        if (this.metrics.time_to_100 === null && this.get_wound_percentage() >= 98.0) {
-            this.metrics.time_to_100 = this.metrics.total_steps;
+        if (this.metrics.time_to_98 === null && this.get_wound_percentage() >= 98.0) {
+            this.metrics.time_to_98 = this.metrics.total_time;
         }
 
         return this.metrics;

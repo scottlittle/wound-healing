@@ -14,7 +14,7 @@ class App {
         this.intentionComplete = false;
 
         this.simCanvas = new Visualizer('sim-canvas');
-        this.resultsCanvas = new Visualizer('cdf-100');
+        this.resultsCanvas = new Visualizer('cdf-total');
 
         this.btnControl = document.getElementById('btn-control');
         this.btnIntention = document.getElementById('btn-intention');
@@ -129,8 +129,8 @@ class App {
                 seed: seed,
                 time_to_50: sim.metrics.time_to_50,
                 time_to_90: sim.metrics.time_to_90,
-                time_to_100: sim.metrics.time_to_100,
-                total_steps: sim.metrics.total_steps,
+                time_to_98: sim.metrics.time_to_98,
+                total_time: sim.metrics.total_time,
                 healing_curve: sim.metrics.healing_curve,
             };
 
@@ -177,8 +177,8 @@ class App {
             const healing_curve = [];
             let time_to_50 = null;
             let time_to_90 = null;
-            let time_to_100 = null;
-            let total_steps = 0;
+            let time_to_98 = null;
+            let total_time = 0;
 
             const start_time = performance.now();
             let step = 0;
@@ -190,10 +190,10 @@ class App {
 
                 if (time_to_50 === null && wound_pct >= 50) time_to_50 = step;
                 if (time_to_90 === null && wound_pct >= 90) time_to_90 = step;
-                if (time_to_100 === null && wound_pct >= 98.0) time_to_100 = step;
+                if (time_to_98 === null && wound_pct >= 98.0) time_to_98 = step;
 
                 if (wound_pct >= 98.0) {
-                    total_steps = step + 1;
+                    total_time = step + 1;
                     break;
                 }
 
@@ -215,18 +215,18 @@ class App {
 
                 if (time_to_50 === null && wound_pct >= 50) time_to_50 = step;
                 if (time_to_90 === null && wound_pct >= 90) time_to_90 = step;
-                if (time_to_100 === null && wound_pct >= 98.0) time_to_100 = step;
+                if (time_to_98 === null && wound_pct >= 98.0) time_to_98 = step;
 
                 if (wound_pct >= 98.0) {
-                    total_steps = step + 1;
+                    total_time = step + 1;
                     break;
                 }
                 sim.step();
                 step++;
             }
 
-            if (time_to_100 === null && sim.get_wound_percentage() >= 98.0) {
-                time_to_100 = total_steps;
+            if (time_to_98 === null && sim.get_wound_percentage() >= 98.0) {
+                time_to_98 = total_time;
             }
 
             const result = {
@@ -234,15 +234,15 @@ class App {
                 seed: seed,
                 time_to_50,
                 time_to_90,
-                time_to_100,
-                total_steps,
+                time_to_98,
+                total_time,
                 healing_curve,
             };
 
             this.intention_results.push(result);
             this.intention_curves.push(healing_curve);
 
-            this.setStatus(`Run ${run_idx + 1} complete | 50%: ${time_to_50 ?? '-'} | 90%: ${time_to_90 ?? '-'} | 100%: ${time_to_100 ?? '-'}`);
+            this.setStatus(`Run ${run_idx + 1} complete | 50%: ${time_to_50 ?? '-'} | 90%: ${time_to_90 ?? '-'} | 98%: ${time_to_98 ?? '-'}`);
             this.hideTimer();
 
             await this.sleep(500);
@@ -292,8 +292,8 @@ class App {
                 seed: seed,
                 time_to_50: sim.metrics.time_to_50,
                 time_to_90: sim.metrics.time_to_90,
-                time_to_100: sim.metrics.time_to_100,
-                total_steps: sim.metrics.total_steps,
+                time_to_98: sim.metrics.time_to_98,
+                total_time: sim.metrics.total_time,
                 healing_curve: sim.metrics.healing_curve,
             };
 
@@ -347,11 +347,11 @@ class App {
     }
 
     displayCharts() {
-        const time_to_100_int = this.intention_results.filter(r => r.time_to_100 !== null).map(r => r.time_to_100);
-        const time_to_100_ctl = this.control_results.filter(r => r.time_to_100 !== null).map(r => r.time_to_100);
+        const total_time_int = this.intention_results.filter(r => r.total_time !== null).map(r => r.total_time);
+        const total_time_ctl = this.control_results.filter(r => r.total_time !== null).map(r => r.total_time);
 
-        this.resultsCanvas.drawCDF('cdf-100', time_to_100_int, time_to_100_ctl, 'CDF: Time to 100% Closure');
-        this.resultsCanvas.drawBoxPlot('boxplot-100', time_to_100_int, time_to_100_ctl, 'Time to 100% Closure');
+        this.resultsCanvas.drawCDF('cdf-total', total_time_int, total_time_ctl, 'CDF: Total Time');
+        this.resultsCanvas.drawBoxPlot('boxplot-total', total_time_int, total_time_ctl, 'Total Time');
     }
 
     displayInterpretation(results) {
@@ -409,10 +409,10 @@ class App {
     }
 
     resultsToCSV(results, phase) {
-        const headers = ['run_id', 'seed', 'time_to_50', 'time_to_90', 'time_to_100', 'total_steps'];
+        const headers = ['run_id', 'seed', 'time_to_50', 'time_to_90', 'time_to_98', 'total_time'];
         let csv = headers.join(',') + '\n';
         for (const r of results) {
-            csv += `${r.run_id},${r.seed},${r.time_to_50 ?? ''},${r.time_to_90 ?? ''},${r.time_to_100 ?? ''},${r.total_steps}\n`;
+            csv += `${r.run_id},${r.seed},${r.time_to_50 ?? ''},${r.time_to_90 ?? ''},${r.time_to_98 ?? ''},${r.total_time}\n`;
         }
         return csv;
     }
