@@ -171,6 +171,7 @@ class App {
             this.setRunCounter(run_idx + 1, num_runs);
 
             this.setStatus(`Run ${run_idx + 1}/${num_runs} - Apply energy healing now!`);
+            this.showCompanion();
 
             const sim = new WoundSimulation({ seed });
 
@@ -242,6 +243,7 @@ class App {
         this.intentionComplete = true;
         this.btnAnalyze.disabled = false;
         this.isRunning = false;
+        this.clearCompanion();
         this.setStatus('Intention Phase Complete! Click "Run Analysis" to run control phase and compare results.');
     }
 
@@ -416,6 +418,178 @@ class App {
             csv += `${r.metric_name},${r.intention_mean.toFixed(4)},${r.control_mean.toFixed(4)},${r.p_value.toFixed(6)},${r.cohens_d.toFixed(4)},${r.percent_faster.toFixed(4)},${r.significant_at_005},${r.bootstrap_ci_low.toFixed(4)},${r.bootstrap_ci_high.toFixed(4)}\n`;
         }
         return csv;
+    }
+
+    generateCompanion() {
+        const catEars = [
+            '  /\\_/\\  ',
+            '  /\\ /\\  ',
+            '  \\^ ^/  ',
+            '  /   \\  ',
+            '  / V \\  ',
+            '  /| |\\  ',
+            ' / \\ /\\ ',
+            '  \\_/\\  ',
+            '  /\\_/\\ ',
+            ' /|   |\\',
+        ];
+        const catEyes = [
+            ' ( o o ) ',
+            ' ( > < ) ',
+            ' ( @ @ ) ',
+            ' ( * * ) ',
+            ' ( . . ) ',
+            ' ( ~ ~ ) ',
+            ' ( - - ) ',
+            ' ( = = ) ',
+            ' ( x x ) ',
+            ' ( + + ) ',
+        ];
+        const catMouths = [
+            '   >^<   ',
+            '   ~w~   ',
+            '   \\_/   ',
+            '   =w=   ',
+            '   (u)   ',
+            '   ^_^   ',
+            '   :3    ',
+            '   >3<   ',
+            '   =3=   ',
+            '   ~^~   ',
+        ];
+        const catBodies = [
+            '  /|   |\\ ',
+            '  / | | \\ ',
+            '  \\  |  / ',
+            '  /  |  \\ ',
+            '  |  |  | ',
+            '  /|\\ /|\\ ',
+            '  \\|/ \\|/ ',
+            '  / \\ / \\ ',
+            '  | | | | ',
+            '  \\_ _/_/ ',
+        ];
+        const catTails = [
+            '  ~~~',
+            '  )) ',
+            '  ~~ ',
+            ' _)) ',
+            '  ~  ',
+            ' )) ',
+            '  ))',
+            ' ~~~',
+            '  _)',
+            ' ~  ',
+        ];
+
+        const dogEars = [
+            '  (   )  ',
+            '  \\   /  ',
+            '  /   \\  ',
+            '  \\_/    ',
+            ' __ __   ',
+            '  ) (    ',
+            ' /   \\   ',
+            ' \\___/   ',
+            '  ) )    ',
+            ' (   )   ',
+        ];
+        const dogEyes = [
+            ' ( o o ) ',
+            ' ( - - ) ',
+            ' ( ^ ^ ) ',
+            ' ( * * ) ',
+            ' ( u u ) ',
+            ' ( @ @ ) ',
+            ' ( ~ ~ ) ',
+            ' ( . . ) ',
+            ' ( + + ) ',
+            ' ( x x ) ',
+        ];
+        const dogMouths = [
+            '   >w<   ',
+            '   ^o^   ',
+            '   \\_/   ',
+            '   =3=   ',
+            '   (U)   ',
+            '   ^_^   ',
+            '   :D    ',
+            '   >3<   ',
+            '   =D=   ',
+            '   ~w~   ',
+        ];
+        const dogBodies = [
+            '  /|   |\\ ',
+            '  / | | \\ ',
+            '  \\  |  / ',
+            '  /  |  \\ ',
+            '  |  |  | ',
+            '  /|\\ /|\\ ',
+            '  \\|/ \\|/ ',
+            '  / \\ / \\ ',
+            '  | | | | ',
+            '  \\_ _/_/ ',
+        ];
+        const dogTails = [
+            '  )))',
+            '  __ ',
+            '  )) ',
+            '  /~ ',
+            ' _)) ',
+            ' )))',
+            '  __',
+            ' /~ ',
+            ' )) ',
+            ' _))',
+        ];
+
+        const prefixes = [
+            'Bar', 'Whis', 'Max', 'Lu', 'Sha', 'Mit', 'Rex', 'Bud', 'Spo', 'Fen',
+            'Pip', 'Jas', 'Ros', 'Dai', 'Bel', 'Coc', 'Zip', 'Nib', 'Tof', 'Peb',
+            'Sno', 'Gum', 'Mar', 'Oli', 'Pec', 'Yam', 'Zes', 'Clo', 'Gin', 'Bix',
+            'Waf', 'Bis', 'Hon', 'Jel', 'Qui', 'Rye', 'Sug', 'Tar', 'Veg', 'Win',
+            'Fli', 'Goo', 'Mop', 'Nut', 'Quil', 'Rag', 'Sip', 'Tux', 'Vex', 'Wig',
+            'Zap', 'Ace', 'Blu', 'Cap', 'Dot', 'Egg', 'Fog', 'Gem', 'Hob', 'Ivy',
+            'Jet', 'Kit', 'Lyn', 'Moe', 'Ned', 'Oak', 'Pax', 'Rex', 'Sky', 'Top',
+            'Uma', 'Van', 'Wes', 'Xan', 'Yip', 'Zed', 'Ash', 'Bay', 'Cob', 'Dex',
+        ];
+        const suffixes = [
+            'ky', 'o', 'ie', 'y', 'a', 'er', 'ix', 'ou', 'i', 'en',
+            'el', 'ar', 'us', 'on', 'in', 'le', 'ny', 'ry', 'ty', 'an',
+            'is', 'um', 'al', 'or', 'un', 'et', 'it', 'ot', 'ut', 'ax',
+        ];
+
+        const isCat = Math.random() < 0.5;
+        const ears = isCat ? catEars : dogEars;
+        const eyes = isCat ? catEyes : dogEyes;
+        const mouths = isCat ? catMouths : dogMouths;
+        const bodies = isCat ? catBodies : dogBodies;
+        const tails = isCat ? catTails : dogTails;
+
+        const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+
+        const ear = pick(ears);
+        const eye = pick(eyes);
+        const mouth = pick(mouths);
+        const body = pick(bodies);
+        const tail = pick(tails);
+
+        const name = pick(prefixes) + pick(suffixes);
+        const species = isCat ? 'the cat' : 'the dog';
+
+        const art = `${ear}\n${eye}\n${mouth}\n${body}${tail}\n\n${name} ${species}`;
+
+        return art;
+    }
+
+    showCompanion() {
+        const el = document.getElementById('companion-display');
+        el.textContent = this.generateCompanion();
+    }
+
+    clearCompanion() {
+        const el = document.getElementById('companion-display');
+        el.textContent = '';
     }
 
     sleep(ms) {
