@@ -421,165 +421,285 @@ class App {
     }
 
     generateCompanion() {
-        const catEars = [
-            '  /\\_/\\  ',
-            '  /\\ /\\  ',
-            '  \\^ ^/  ',
-            '  /   \\  ',
-            '  / V \\  ',
-            '  /| |\\  ',
-            ' / \\ /\\ ',
-            '  \\_/\\  ',
-            '  /\\_/\\ ',
-            ' /|   |\\',
-        ];
-        const catEyes = [
-            ' ( o o ) ',
-            ' ( > < ) ',
-            ' ( @ @ ) ',
-            ' ( * * ) ',
-            ' ( . . ) ',
-            ' ( ~ ~ ) ',
-            ' ( - - ) ',
-            ' ( = = ) ',
-            ' ( x x ) ',
-            ' ( + + ) ',
-        ];
-        const catMouths = [
-            '   >^<   ',
-            '   ~w~   ',
-            '   \\_/   ',
-            '   =w=   ',
-            '   (u)   ',
-            '   ^_^   ',
-            '   :3    ',
-            '   >3<   ',
-            '   =3=   ',
-            '   ~^~   ',
-        ];
-        const catBodies = [
-            '  /|   |\\ ',
-            '  / | | \\ ',
-            '  \\  |  / ',
-            '  /  |  \\ ',
-            '  |  |  | ',
-            '  /|\\ /|\\ ',
-            '  \\|/ \\|/ ',
-            '  / \\ / \\ ',
-            '  | | | | ',
-            '  \\_ _/_/ ',
-        ];
-        const catTails = [
-            '  ~~~',
-            '  )) ',
-            '  ~~ ',
-            ' _)) ',
-            '  ~  ',
-            ' )) ',
-            '  ))',
-            ' ~~~',
-            '  _)',
-            ' ~  ',
-        ];
-
-        const dogEars = [
-            '  (   )  ',
-            '  \\   /  ',
-            '  /   \\  ',
-            '  \\_/    ',
-            ' __ __   ',
-            '  ) (    ',
-            ' /   \\   ',
-            ' \\___/   ',
-            '  ) )    ',
-            ' (   )   ',
-        ];
-        const dogEyes = [
-            ' ( o o ) ',
-            ' ( - - ) ',
-            ' ( ^ ^ ) ',
-            ' ( * * ) ',
-            ' ( u u ) ',
-            ' ( @ @ ) ',
-            ' ( ~ ~ ) ',
-            ' ( . . ) ',
-            ' ( + + ) ',
-            ' ( x x ) ',
-        ];
-        const dogMouths = [
-            '   >w<   ',
-            '   ^o^   ',
-            '   \\_/   ',
-            '   =3=   ',
-            '   (U)   ',
-            '   ^_^   ',
-            '   :D    ',
-            '   >3<   ',
-            '   =D=   ',
-            '   ~w~   ',
-        ];
-        const dogBodies = [
-            '  /|   |\\ ',
-            '  / | | \\ ',
-            '  \\  |  / ',
-            '  /  |  \\ ',
-            '  |  |  | ',
-            '  /|\\ /|\\ ',
-            '  \\|/ \\|/ ',
-            '  / \\ / \\ ',
-            '  | | | | ',
-            '  \\_ _/_/ ',
-        ];
-        const dogTails = [
-            '  )))',
-            '  __ ',
-            '  )) ',
-            '  /~ ',
-            ' _)) ',
-            ' )))',
-            '  __',
-            ' /~ ',
-            ' )) ',
-            ' _))',
+        const cats = [
+            `    /\\_/\\
+   ( o o )
+   (  =  )
+  /|     |\\
+ (_|     |_)
+  ^^     ^^`,
+            `      /\\_/\\
+     / 0 0 \\
+    |   Y   |
+     \\  ~  /
+      \\___/
+     /     \\
+    |       |`,
+            `   /\\_/\\
+  ( ^ ^ )
+   \\ ~ /
+   /| |\\
+  / | | \\
+ (_|_|_)`,
+            `    /\\_/\\
+   ( @ @ )
+    \\ ~ /
+    /| |\\
+   / | | \\
+  (_|_|_|_)
+     | |`,
+            `     /\\_/\\
+    ( * * )
+     \\ - /
+    /|   |\\
+   / |   | \\
+  (_|___|___)
+      | |
+     /   \\`,
+            `    /\\_/\\
+   ( > < )
+    \\ ~ /
+    /| |\\
+   /_|_|_\\
+     | |
+    /   \\`,
+            `     /\\_/\\
+    ( . . )
+     \\ _ /
+     /| |\\
+    / | | \\
+   (_|_|_|_)
+      | |
+     /   \\`,
+            `    /\\_/\\
+   ( - - )
+    \\ _ /
+    /| |\\
+   / | | \\
+  (_|_|_|_)
+     | |
+    /   \\`,
+            `     /\\_/\\
+    ( ~ ~ )
+     \\ ^ /
+     /| |\\
+    / | | \\
+   (_|_|_|_)
+      | |
+     /   \\`,
+            `    /\\_/\\
+   ( = = )
+    \\ ^ /
+    /| |\\
+   / | | \\
+  (_|_|_|_)
+     | |
+    /   \\`,
+            `     /\\_/\\
+    ( x x )
+     \\ = /
+     /| |\\
+    / | | \\
+   (_|_|_|_)
+      | |
+     /   \\`,
+            `    /\\_/\\
+   ( + + )
+    \\ = /
+    /| |\\
+   / | | \\
+  (_|_|_|_)
+     | |
+    /   \\`,
+            `     /\\_/\\
+    ( u u )
+     \\ w /
+     /| |\\
+    / | | \\
+   (_|_|_|_)
+      | |
+     /   \\`,
+            `    /\\_/\\
+   ( v v )
+    \\ w /
+    /| |\\
+   / | | \\
+  (_|_|_|_)
+     | |
+    /   \\`,
+            `     /\\_/\\
+    ( o o )
+     \\ ^ /
+     /| |\\
+    / | | \\
+   (_|_|_|_)
+      | |
+     /   \\`,
         ];
 
-        const prefixes = [
-            'Bar', 'Whis', 'Max', 'Lu', 'Sha', 'Mit', 'Rex', 'Bud', 'Spo', 'Fen',
-            'Pip', 'Jas', 'Ros', 'Dai', 'Bel', 'Coc', 'Zip', 'Nib', 'Tof', 'Peb',
-            'Sno', 'Gum', 'Mar', 'Oli', 'Pec', 'Yam', 'Zes', 'Clo', 'Gin', 'Bix',
-            'Waf', 'Bis', 'Hon', 'Jel', 'Qui', 'Rye', 'Sug', 'Tar', 'Veg', 'Win',
-            'Fli', 'Goo', 'Mop', 'Nut', 'Quil', 'Rag', 'Sip', 'Tux', 'Vex', 'Wig',
-            'Zap', 'Ace', 'Blu', 'Cap', 'Dot', 'Egg', 'Fog', 'Gem', 'Hob', 'Ivy',
-            'Jet', 'Kit', 'Lyn', 'Moe', 'Ned', 'Oak', 'Pax', 'Rex', 'Sky', 'Top',
-            'Uma', 'Van', 'Wes', 'Xan', 'Yip', 'Zed', 'Ash', 'Bay', 'Cob', 'Dex',
+        const dogs = [
+            `    __
+   /  \\
+  / .. \\
+  \\    /
+  /    \\
+ /|    |\\
+(_|____|_)
+   |  |
+  /    \\`,
+            `      __
+  ___/o \\
+ /  _/   \\
+|  /|    |
+ \\ ||    |
+  \\||    |
+   |     |
+   |_____|`,
+            `    __
+   /  \\
+  / o o\\
+  \\ ^ /
+  /    \\
+ /|    |\\
+(_|____|_)
+   |  |
+  /    \\`,
+            `      __
+  ___/  \\
+ /  o o  \\
+|    ^    |
+ \\  ~~~  /
+  \\_____/
+  /     \\
+ |       |`,
+            `    __
+   /  \\
+  / - -\\
+  \\ ^ /
+  /    \\
+ /|    |\\
+(_|____|_)
+   |  |
+  /    \\`,
+            `      __
+  ___/o \\
+ /  _/   \\
+|  /|    |
+ \\ ||    |
+  \\||    |
+   |     |
+   |_____|
+  /      \\`,
+            `    __
+   /  \\
+  / * *\\
+  \\ ^ /
+  /    \\
+ /|    |\\
+(_|____|_)
+   |  |
+  /    \\`,
+            `      __
+  ___/  \\
+ /  @ @  \\
+|    ^    |
+ \\  ~~~  /
+  \\_____/
+  /     \\
+ |       |`,
+            `    __
+   /  \\
+  / . .\\
+  \\ = /
+  /    \\
+ /|    |\\
+(_|____|_)
+   |  |
+  /    \\`,
+            `      __
+  ___/o \\
+ /  _/   \\
+|  /|    |
+ \\ ||    |
+  \\||    |
+   |     |
+   |_____|
+  /      \\
+ /        \\`,
+            `    __
+   /  \\
+  / ~ ~\\
+  \\ ^ /
+  /    \\
+ /|    |\\
+(_|____|_)
+   |  |
+  /    \\`,
+            `      __
+  ___/  \\
+ /  x x  \\
+|    ^    |
+ \\  ~~~  /
+  \\_____/
+  /     \\
+ |       |`,
+            `    __
+   /  \\
+  / u u\\
+  \\ w /
+  /    \\
+ /|    |\\
+(_|____|_)
+   |  |
+  /    \\`,
+            `      __
+  ___/o \\
+ /  _/   \\
+|  /|    |
+ \\ ||    |
+  \\||    |
+   |     |
+   |_____|
+  /      \\`,
+            `    __
+   /  \\
+  / + +\\
+  \\ ^ /
+  /    \\
+ /|    |\\
+(_|____|_)
+   |  |
+  /    \\`,
         ];
-        const suffixes = [
-            'ky', 'o', 'ie', 'y', 'a', 'er', 'ix', 'ou', 'i', 'en',
-            'el', 'ar', 'us', 'on', 'in', 'le', 'ny', 'ry', 'ty', 'an',
-            'is', 'um', 'al', 'or', 'un', 'et', 'it', 'ot', 'ut', 'ax',
+
+        const catNames = [
+            'Whiskers', 'Mittens', 'Shadow', 'Luna', 'Felix', 'Cleo', 'Nimbus',
+            'Patches', 'Ginger', 'Smokey', 'Jasper', 'Willow', 'Binx', 'Mochi',
+            'Pepper', 'Olive', 'Salem', 'Jinx', 'Tofu', 'Miso', 'Noodle',
+            'Bean', 'Pip', 'Ziggy', 'Cosmo', 'Maple', 'Hazel', 'Ivy',
+            'Ash', 'Storm', 'Misty', 'Dusty', 'Cocoa', 'Rusty', 'Amber',
+            'Pearl', 'Jade', 'Ruby', 'Onyx', 'Snow', 'Frost', 'Ember',
+        ];
+
+        const dogNames = [
+            'Barkley', 'Spot', 'Rex', 'Buddy', 'Max', 'Daisy', 'Cooper',
+            'Bailey', 'Sadie', 'Molly', 'Rocky', 'Bear', 'Duke', 'Tucker',
+            'Charlie', 'Milo', 'Oscar', 'Toby', 'Jack', 'Scout', 'Rosie',
+            'Lola', 'Zoe', 'Penny', 'Ginger', 'Piper', 'Winnie', 'Lily',
+            'Rusty', 'Duke', 'Buster', 'Ranger', 'Scout', 'Dash', 'Blaze',
+            'Bolt', 'Chase', 'Hunter', 'Rex', 'Wolf', 'Bear', 'Fang',
         ];
 
         const isCat = Math.random() < 0.5;
-        const ears = isCat ? catEars : dogEars;
-        const eyes = isCat ? catEyes : dogEyes;
-        const mouths = isCat ? catMouths : dogMouths;
-        const bodies = isCat ? catBodies : dogBodies;
-        const tails = isCat ? catTails : dogTails;
-
-        const pick = arr => arr[Math.floor(Math.random() * arr.length)];
-
-        const ear = pick(ears);
-        const eye = pick(eyes);
-        const mouth = pick(mouths);
-        const body = pick(bodies);
-        const tail = pick(tails);
-
-        const name = pick(prefixes) + pick(suffixes);
+        const pool = isCat ? cats : dogs;
+        const names = isCat ? catNames : dogNames;
         const species = isCat ? 'the cat' : 'the dog';
 
-        const art = `${ear}\n${eye}\n${mouth}\n${body}${tail}\n\n${name} ${species}`;
+        const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+        const art = pick(pool);
+        const name = pick(names);
 
-        return art;
+        return `${art}\n\n${name} ${species}`;
     }
 
     showCompanion() {
