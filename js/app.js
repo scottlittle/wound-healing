@@ -330,7 +330,7 @@ class App {
                 <td>${r.control_mean.toFixed(2)}</td>
                 <td>${r.p_value.toFixed(4)}</td>
                 <td>${r.cohens_d.toFixed(3)}</td>
-                <td>${r.percent_faster.toFixed(1)}%</td>
+                <td>${r.percent_faster.toFixed(2)}%</td>
                 <td>${r.significant_at_005 ? 'YES' : 'No'}</td>
                 <td>[${r.bootstrap_ci_low.toFixed(3)}, ${r.bootstrap_ci_high.toFixed(3)}]</td>
             `;
@@ -355,7 +355,7 @@ class App {
         let html = '<ul>';
         for (const r of results) {
             const sig = r.significant_at_005 ? (r.significant_at_001 ? 'highly significant' : 'significant') : 'not significant';
-            const direction = r.percent_faster > 0 ? `${r.percent_faster.toFixed(1)}% faster` : `${Math.abs(r.percent_faster).toFixed(1)}% slower`;
+            const direction = r.percent_faster > 0 ? `${r.percent_faster.toFixed(2)}% faster` : `${Math.abs(r.percent_faster).toFixed(2)}% slower`;
             const effect_size = Math.abs(r.cohens_d) < 0.2 ? 'negligible' : Math.abs(r.cohens_d) < 0.5 ? 'small' : Math.abs(r.cohens_d) < 0.8 ? 'medium' : 'large';
 
             html += `<li><strong>${r.metric_name.replace('_', ' ')}:</strong> ${sig} (p=${r.p_value.toFixed(4)}). Intention group was ${direction} (Cohen's d=${r.cohens_d.toFixed(3)}, ${effect_size} effect). 95% CI: [${r.bootstrap_ci_low.toFixed(3)}, ${r.bootstrap_ci_high.toFixed(3)}]</li>`;
