@@ -57,7 +57,11 @@ class App {
             const data = await resp.json();
             if (data.success && data.data) {
                 this.seed_source = 'QUANTUM';
-                return data.data;
+                const seeds32 = [];
+                for (let i = 0; i < data.data.length - 1; i += 2) {
+                    seeds32.push((data.data[i] << 16) | data.data[i + 1]);
+                }
+                return seeds32;
             }
         } catch (e) {
             console.log('ANU QRNG unavailable:', e);
@@ -65,8 +69,8 @@ class App {
 
         this.seed_source = 'SYSTEM';
         const seeds = [];
-        for (let i = 0; i < n; i++) {
-            seeds.push(crypto.getRandomValues(new Uint16Array(1))[0]);
+        for (let i = 0; i < n / 2; i++) {
+            seeds.push(crypto.getRandomValues(new Uint32Array(1))[0]);
         }
         return seeds;
     }
@@ -157,12 +161,21 @@ class App {
         const num_runs = parseInt(this.numRunsInput.value);
         const max_steps = 100;
 
+        const total_needed = num_runs * 2;
+        if (total_needed > this.all_seeds.length) {
+            this.setStatus(`Not enough seeds. Need ${total_needed}, have ${this.all_seeds.length}. Reduce runs or refresh.`);
+            this.isRunning = false;
+            return;
+        }
+
         this.btnControl.disabled = true;
         this.btnIntention.disabled = true;
         this.btnAnalyze.disabled = true;
 
         this.intention_results = [];
         this.intention_curves = [];
+
+        this.intention_seeds = this.all_seeds.slice(0, num_runs);
 
         this.setStatus('Intention Phase Running...');
 
