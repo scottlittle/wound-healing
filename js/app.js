@@ -171,7 +171,7 @@ class App {
             this.setRunCounter(run_idx + 1, num_runs);
 
             const companion = this.generateCompanion();
-            this.setStatus(`Run ${run_idx + 1}/${num_runs} - ${companion.name}`);
+            this.setStatus(`Run ${run_idx + 1}/${num_runs} - Apply energy healing!`);
 
             const sim = new WoundSimulation({ seed });
 
