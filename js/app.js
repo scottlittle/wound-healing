@@ -170,8 +170,8 @@ class App {
             const seed = this.intention_seeds[run_idx];
             this.setRunCounter(run_idx + 1, num_runs);
 
-            this.setStatus(`Run ${run_idx + 1}/${num_runs} - Apply energy healing now!`);
-            this.showCompanion();
+            const companion = this.generateCompanion();
+            this.setStatus(`Run ${run_idx + 1}/${num_runs} - ${companion.name}`);
 
             const sim = new WoundSimulation({ seed });
 
@@ -202,7 +202,7 @@ class App {
                 step++;
 
                 this.showTimer(`Step ${step} | ${wound_pct.toFixed(1)}% closed`);
-                this.simCanvas.renderGrid(sim.grid, sim.grid_size, `Run ${run_idx + 1}`);
+                this.simCanvas.renderGrid(sim.grid, sim.grid_size, `Run ${run_idx + 1} - ${companion.name}`);
 
                 if (wound_pct < 98.0) {
                     await this.sleep(100);
@@ -243,7 +243,6 @@ class App {
         this.intentionComplete = true;
         this.btnAnalyze.disabled = false;
         this.isRunning = false;
-        this.clearCompanion();
         this.setStatus('Intention Phase Complete! Click "Run Analysis" to run control phase and compare results.');
     }
 
@@ -421,257 +420,6 @@ class App {
     }
 
     generateCompanion() {
-        const cats = [
-            `    /\\_/\\
-   ( o o )
-   (  =  )
-  /|     |\\
- (_|     |_)
-  ^^     ^^`,
-            `      /\\_/\\
-     / 0 0 \\
-    |   Y   |
-     \\  ~  /
-      \\___/
-     /     \\
-    |       |`,
-            `   /\\_/\\
-  ( ^ ^ )
-   \\ ~ /
-   /| |\\
-  / | | \\
- (_|_|_)`,
-            `    /\\_/\\
-   ( @ @ )
-    \\ ~ /
-    /| |\\
-   / | | \\
-  (_|_|_|_)
-     | |`,
-            `     /\\_/\\
-    ( * * )
-     \\ - /
-    /|   |\\
-   / |   | \\
-  (_|___|___)
-      | |
-     /   \\`,
-            `    /\\_/\\
-   ( > < )
-    \\ ~ /
-    /| |\\
-   /_|_|_\\
-     | |
-    /   \\`,
-            `     /\\_/\\
-    ( . . )
-     \\ _ /
-     /| |\\
-    / | | \\
-   (_|_|_|_)
-      | |
-     /   \\`,
-            `    /\\_/\\
-   ( - - )
-    \\ _ /
-    /| |\\
-   / | | \\
-  (_|_|_|_)
-     | |
-    /   \\`,
-            `     /\\_/\\
-    ( ~ ~ )
-     \\ ^ /
-     /| |\\
-    / | | \\
-   (_|_|_|_)
-      | |
-     /   \\`,
-            `    /\\_/\\
-   ( = = )
-    \\ ^ /
-    /| |\\
-   / | | \\
-  (_|_|_|_)
-     | |
-    /   \\`,
-            `     /\\_/\\
-    ( x x )
-     \\ = /
-     /| |\\
-    / | | \\
-   (_|_|_|_)
-      | |
-     /   \\`,
-            `    /\\_/\\
-   ( + + )
-    \\ = /
-    /| |\\
-   / | | \\
-  (_|_|_|_)
-     | |
-    /   \\`,
-            `     /\\_/\\
-    ( u u )
-     \\ w /
-     /| |\\
-    / | | \\
-   (_|_|_|_)
-      | |
-     /   \\`,
-            `    /\\_/\\
-   ( v v )
-    \\ w /
-    /| |\\
-   / | | \\
-  (_|_|_|_)
-     | |
-    /   \\`,
-            `     /\\_/\\
-    ( o o )
-     \\ ^ /
-     /| |\\
-    / | | \\
-   (_|_|_|_)
-      | |
-     /   \\`,
-        ];
-
-        const dogs = [
-            `    __
-   /  \\
-  / .. \\
-  \\    /
-  /    \\
- /|    |\\
-(_|____|_)
-   |  |
-  /    \\`,
-            `      __
-  ___/o \\
- /  _/   \\
-|  /|    |
- \\ ||    |
-  \\||    |
-   |     |
-   |_____|`,
-            `    __
-   /  \\
-  / o o\\
-  \\ ^ /
-  /    \\
- /|    |\\
-(_|____|_)
-   |  |
-  /    \\`,
-            `      __
-  ___/  \\
- /  o o  \\
-|    ^    |
- \\  ~~~  /
-  \\_____/
-  /     \\
- |       |`,
-            `    __
-   /  \\
-  / - -\\
-  \\ ^ /
-  /    \\
- /|    |\\
-(_|____|_)
-   |  |
-  /    \\`,
-            `      __
-  ___/o \\
- /  _/   \\
-|  /|    |
- \\ ||    |
-  \\||    |
-   |     |
-   |_____|
-  /      \\`,
-            `    __
-   /  \\
-  / * *\\
-  \\ ^ /
-  /    \\
- /|    |\\
-(_|____|_)
-   |  |
-  /    \\`,
-            `      __
-  ___/  \\
- /  @ @  \\
-|    ^    |
- \\  ~~~  /
-  \\_____/
-  /     \\
- |       |`,
-            `    __
-   /  \\
-  / . .\\
-  \\ = /
-  /    \\
- /|    |\\
-(_|____|_)
-   |  |
-  /    \\`,
-            `      __
-  ___/o \\
- /  _/   \\
-|  /|    |
- \\ ||    |
-  \\||    |
-   |     |
-   |_____|
-  /      \\
- /        \\`,
-            `    __
-   /  \\
-  / ~ ~\\
-  \\ ^ /
-  /    \\
- /|    |\\
-(_|____|_)
-   |  |
-  /    \\`,
-            `      __
-  ___/  \\
- /  x x  \\
-|    ^    |
- \\  ~~~  /
-  \\_____/
-  /     \\
- |       |`,
-            `    __
-   /  \\
-  / u u\\
-  \\ w /
-  /    \\
- /|    |\\
-(_|____|_)
-   |  |
-  /    \\`,
-            `      __
-  ___/o \\
- /  _/   \\
-|  /|    |
- \\ ||    |
-  \\||    |
-   |     |
-   |_____|
-  /      \\`,
-            `    __
-   /  \\
-  / + +\\
-  \\ ^ /
-  /    \\
- /|    |\\
-(_|____|_)
-   |  |
-  /    \\`,
-        ];
-
         const catNames = [
             'Whiskers', 'Mittens', 'Shadow', 'Luna', 'Felix', 'Cleo', 'Nimbus',
             'Patches', 'Ginger', 'Smokey', 'Jasper', 'Willow', 'Binx', 'Mochi',
@@ -679,29 +427,28 @@ class App {
             'Bean', 'Pip', 'Ziggy', 'Cosmo', 'Maple', 'Hazel', 'Ivy',
             'Ash', 'Storm', 'Misty', 'Dusty', 'Cocoa', 'Rusty', 'Amber',
             'Pearl', 'Jade', 'Ruby', 'Onyx', 'Snow', 'Frost', 'Ember',
-            'Bella', 'Simba', 'Nala', 'Tiger', 'Oreo', 'Kitty', 'Misty',
-            'Lucy', 'Charlie', 'Milo', 'Oliver', 'Leo', 'Loki', 'Stella',
-            'Chloe', 'Zoe', 'Lily', 'Ellie', 'Kitten', 'Angel', 'Baby',
-            'Smokey', 'Sam', 'Tigger', 'Tiger', 'Oreo', 'Mittens', 'Ginger',
-            'Calico', 'Siamese', 'Persian', 'Tabby', 'Maine', 'Ragdoll', 'Sphynx',
-            'Bengal', 'Abyssinian', 'Birman', 'Burmese', 'Chartreux', 'Cornish',
-            'Devon', 'Egyptian', 'Exotic', 'Havana', 'Japanese', 'Korat',
-            'LaPerm', 'Manx', 'Norwegian', 'Ocicat', 'Oriental', 'Pixiebob',
-            'Ragamuffin', 'Russian', 'Savannah', 'Scottish', 'Selkirk', 'Singapura',
-            'Snowshoe', 'Somali', 'Tonkinese', 'Turkish', 'Balinese', 'Bobtail',
-            'Chausie', 'Cheetoh', 'Cymric', 'Donskoy', 'Elf', 'German',
-            'Highlander', 'Khao', 'Kurilian', 'Lambkin', 'Lykoi', 'Minskin',
-            'Napoleon', 'Nebelung', 'Peterbald', 'Serengeti', 'Sokoke', 'Toyger',
-            'Ukrainian', 'York', 'Whisker', 'Paws', 'Claws', 'Furball',
-            'Purrfect', 'Meow', 'Hiss', 'Pounce', 'Sneak', 'Creep',
-            'Stalk', 'Leap', 'Bound', 'Spring', 'Jump', 'Hop',
-            'Skip', 'Dash', 'Run', 'Sprint', 'Race', 'Zoom',
+            'Bella', 'Simba', 'Nala', 'Tiger', 'Oreo', 'Kitty', 'Lucy',
+            'Charlie', 'Milo', 'Oliver', 'Leo', 'Loki', 'Stella', 'Chloe',
+            'Zoe', 'Lily', 'Ellie', 'Kitten', 'Angel', 'Baby', 'Sam',
+            'Tigger', 'Calico', 'Siamese', 'Persian', 'Tabby', 'Maine',
+            'Ragdoll', 'Sphynx', 'Bengal', 'Abyssinian', 'Birman', 'Burmese',
+            'Chartreux', 'Cornish', 'Devon', 'Egyptian', 'Exotic', 'Havana',
+            'Japanese', 'Korat', 'LaPerm', 'Manx', 'Norwegian', 'Ocicat',
+            'Oriental', 'Pixiebob', 'Ragamuffin', 'Russian', 'Savannah', 'Scottish',
+            'Selkirk', 'Singapura', 'Snowshoe', 'Somali', 'Tonkinese', 'Turkish',
+            'Balinese', 'Bobtail', 'Chausie', 'Cheetoh', 'Cymric', 'Donskoy',
+            'Elf', 'German', 'Highlander', 'Khao', 'Kurilian', 'Lambkin',
+            'Lykoi', 'Minskin', 'Napoleon', 'Nebelung', 'Peterbald', 'Serengeti',
+            'Sokoke', 'Toyger', 'Ukrainian', 'York', 'Paws', 'Claws',
+            'Furball', 'Purrfect', 'Meow', 'Hiss', 'Pounce', 'Sneak',
+            'Creep', 'Stalk', 'Leap', 'Bound', 'Spring', 'Jump',
+            'Hop', 'Skip', 'Dash', 'Run', 'Sprint', 'Race', 'Zoom',
             'Swoop', 'Dive', 'Swoosh', 'Flutter', 'Glide', 'Soar',
             'Float', 'Drift', 'Sail', 'Cruise', 'Coast', 'Slide',
             'Slip', 'Skid', 'Skate', 'Roll', 'Spin', 'Twirl',
             'Whirl', 'Swirl', 'Circle', 'Loop', 'Arc', 'Curve',
-            'Bend', 'Turn', 'Twist', 'Flip', 'Flop', 'Roll',
-            'Tumble', 'Cartwheel', 'Somersault', 'Backflip', 'Frontflip', 'Handspring',
+            'Bend', 'Turn', 'Twist', 'Flip', 'Flop', 'Tumble',
+            'Cartwheel', 'Somersault', 'Backflip', 'Frontflip', 'Handspring',
             'Vault', 'Hurdle', 'Leapfrog', 'Skipjack', 'Jumping', 'Bouncing',
             'Hopping', 'Skipping', 'Dancing', 'Prancing', 'Strutting', 'Striding',
             'Walking', 'Strolling', 'Wandering', 'Roaming', 'Roving', 'Exploring',
@@ -712,69 +459,67 @@ class App {
             'Sensing', 'Feeling', 'Touching', 'Petting', 'Rubbing', 'Nuzzling',
             'Snuggling', 'Cuddling', 'Nesting', 'Resting', 'Sleeping', 'Dreaming',
             'Napping', 'Dozing', 'Slumbering', 'Snoozing', 'Drowsing', 'Nodding',
-            'Yawning', 'Stretching', 'Purring', 'Meowing', 'Chirping', 'Trilling',
-            'Chattering', 'Caterwauling', 'Howling', 'Yowling', 'Screaming', 'Shrieking',
+            'Yawning', 'Stretching', 'Purring', 'Chirping', 'Trilling', 'Chattering',
+            'Caterwauling', 'Howling', 'Yowling', 'Screaming', 'Shrieking',
             'Screeching', 'Squeaking', 'Squealing', 'Whimpering', 'Whining', 'Crying',
             'Weeping', 'Sobbing', 'Bawling', 'Wailing', 'Keening', 'Lamenting',
             'Mourning', 'Grieving', 'Sorrowing', 'Pining', 'Longing', 'Yearning',
-            'Wishing', 'Hoping', 'Dreaming', 'Imagining', 'Fantasizing', 'Wondering',
-            'Thinking', 'Pondering', 'Musing', 'Reflecting', 'Contemplating', 'Meditating',
-            'Praying', 'Blessing', 'Thanking', 'Praising', 'Worshipping', 'Adoring',
-            'Loving', 'Caring', 'Nurturing', 'Protecting', 'Guarding', 'Watching',
+            'Wishing', 'Hoping', 'Imagining', 'Fantasizing', 'Wondering',
+            'Thinking', 'Pondering', 'Musing', 'Reflecting', 'Contemplating',
+            'Meditating', 'Praying', 'Blessing', 'Thanking', 'Praising', 'Worshipping',
+            'Adoring', 'Loving', 'Caring', 'Nurturing', 'Protecting', 'Guarding',
             'Keeping', 'Holding', 'Embracing', 'Hugging', 'Squeezing', 'Kissing',
             'Licking', 'Grooming', 'Cleaning', 'Washing', 'Bathing', 'Splashing',
-            'Playing', 'Frolicking', 'Romping', 'Rambuncting', 'Roughhousing', 'Wrestling',
-            'Fighting', 'Battling', 'Clashing', 'Striking', 'Hitting', 'Punching',
-            'Kicking', 'Scratching', 'Clawing', 'Biting', 'Nibbling', 'Chewing',
-            'Gnawing', 'Munching', 'Munching', 'Crunching', 'Crunching', 'Snacking',
-            'Eating', 'Feasting', 'Dining', 'Savoring', 'Tasting', 'Sampling',
-            'Devouring', 'Gobbling', 'Wolfing', 'Inhaling', 'Swallowing', 'Gulping',
-            'Drinking', 'Sipping', 'Slurping', 'Lapping', 'Lapping', 'Lapping',
-            'Paddling', 'Swimming', 'Floating', 'Bobbing', 'Diving', 'Plunging',
-            'Sinking', 'Drowning', 'Submerging', 'Immersing', 'Dipping', 'Dunking',
-            'Soaking', 'Wetting', 'Drenching', 'Drenching', 'Drenching', 'Drenching',
-            'Dampening', 'Moistening', 'Humidifying', 'Misting', 'Spraying', 'Spritzing',
-            'Squirting', 'Shooting', 'Blasting', 'Bursting', 'Exploding', 'Popping',
-            'Cracking', 'Snapping', 'Breaking', 'Shattering', 'Smashing', 'Crushing',
-            'Squashing', 'Squeezing', 'Pressing', 'Pushing', 'Shoving', 'Thrusting',
-            'Driving', 'Forcing', 'Compelling', 'Urging', 'Encouraging', 'Motivating',
-            'Inspiring', 'Stimulating', 'Exciting', 'Thrilling', 'Electrifying', 'Invigorating',
-            'Energizing', 'Revitalizing', 'Rejuvenating', 'Refreshing', 'Renewing', 'Restoring',
+            'Playing', 'Frolicking', 'Romping', 'Rambuncting', 'Roughhousing',
+            'Wrestling', 'Fighting', 'Battling', 'Clashing', 'Striking', 'Hitting',
+            'Punching', 'Kicking', 'Scratching', 'Clawing', 'Biting', 'Nibbling',
+            'Chewing', 'Gnawing', 'Munching', 'Crunching', 'Snacking', 'Eating',
+            'Feasting', 'Dining', 'Savoring', 'Tasting', 'Sampling', 'Devouring',
+            'Gobbling', 'Wolfing', 'Inhaling', 'Swallowing', 'Gulping', 'Drinking',
+            'Sipping', 'Slurping', 'Lapping', 'Paddling', 'Swimming', 'Floating',
+            'Bobbing', 'Diving', 'Plunging', 'Sinking', 'Dipping', 'Dunking',
+            'Soaking', 'Wetting', 'Drenching', 'Dampening', 'Moistening', 'Humidifying',
+            'Misting', 'Spraying', 'Spritzing', 'Squirting', 'Shooting', 'Blasting',
+            'Bursting', 'Exploding', 'Popping', 'Cracking', 'Snapping', 'Breaking',
+            'Shattering', 'Smashing', 'Crushing', 'Squashing', 'Squeezing', 'Pressing',
+            'Pushing', 'Shoving', 'Thrusting', 'Driving', 'Forcing', 'Compelling',
+            'Urging', 'Encouraging', 'Motivating', 'Inspiring', 'Stimulating',
+            'Exciting', 'Thrilling', 'Electrifying', 'Invigorating', 'Energizing',
+            'Revitalizing', 'Rejuvenating', 'Refreshing', 'Renewing', 'Restoring',
             'Healing', 'Curing', 'Mending', 'Fixing', 'Repairing', 'Patching',
             'Darning', 'Sewing', 'Stitching', 'Knitting', 'Weaving', 'Spinning',
             'Twisting', 'Turning', 'Rotating', 'Revolving', 'Orbiting', 'Circling',
             'Looping', 'Coiling', 'Winding', 'Wrapping', 'Binding', 'Tying',
-            'Knotting', 'Lacing', 'Stringing', 'Threading', 'Weaving', 'Braiding',
-            'Plaiting', 'Tangling', 'Knotting', 'Snarling', 'Messing', 'Cluttering',
-            'Jumbling', 'Mixing', 'Blending', 'Merging', 'Combining', 'Uniting',
-            'Joining', 'Connecting', 'Linking', 'Attaching', 'Fastening', 'Securing',
-            'Locking', 'Bolting', 'Latching', 'Clasping', 'Gripping', 'Holding',
-            'Grasping', 'Clutching', 'Seizing', 'Grabbing', 'Snatching', 'Capturing',
-            'Catching', 'Trapping', 'Ensnaring', 'Entangling', 'Enmeshing', 'Embroiling',
-            'Involving', 'Engaging', 'Participating', 'Competing', 'Contesting', 'Vying',
-            'Striving', 'Struggling', 'Fighting', 'Battling', 'Warring', 'Combating',
-            'Conflicting', 'Clashing', 'Colliding', 'Crashing', 'Bumping', 'Hitting',
-            'Striking', 'Pounding', 'Hammering', 'Beating', 'Pulsing', 'Throbbing',
-            'Vibrating', 'Shaking', 'Trembling', 'Quivering', 'Shivering', 'Shuddering',
-            'Quaking', 'Tremoring', 'Rumbling', 'Roaring', 'Bellowing', 'Barking',
-            'Yapping', 'Yipping', 'Baying', 'Howling', 'Wailing', 'Crying',
-            'Sobbing', 'Weeping', 'Whimpering', 'Whining', 'Moaning', 'Groaning',
-            'Sighing', 'Breathing', 'Gasping', 'Panting', 'Wheezing', 'Coughing',
-            'Sneezing', 'Sniffing', 'Snorting', 'Blowing', 'Puffing', 'Huffing',
-            'Exhaling', 'Inhaling', 'Breathing', 'Living', 'Existing', 'Being',
-            'Becoming', 'Growing', 'Developing', 'Maturing', 'Aging', 'Ripening',
-            'Blossoming', 'Flowering', 'Blooming', 'Sprouting', 'Germinating', 'Seeding',
-            'Planting', 'Sowing', 'Harvesting', 'Reaping', 'Gathering', 'Collecting',
-            'Accumulating', 'Amassing', 'Stockpiling', 'Hoarding', 'Saving', 'Storing',
-            'Keeping', 'Preserving', 'Conserving', 'Protecting', 'Shielding', 'Sheltering',
-            'Harboring', 'Housing', 'Accommodating', 'Hosting', 'Entertaining', 'Amusing',
-            'Delighting', 'Pleasing', 'Satisfying', 'Gratifying', 'Fulfilling', 'Completing',
-            'Finishing', 'Ending', 'Concluding', 'Terminating', 'Stopping', 'Halting',
-            'Pausing', 'Resting', 'Waiting', 'Lingering', 'Loitering', 'Dawdling',
-            'Dallying', 'Delaying', 'Postponing', 'Deferring', 'Procrastinating', 'Stalling',
-            'Hesitating', 'Wavering', 'Vacillating', 'Oscillating', 'Fluctuating', 'Varying',
+            'Knotting', 'Lacing', 'Stringing', 'Threading', 'Braiding', 'Plaiting',
+            'Tangling', 'Snarling', 'Messing', 'Cluttering', 'Jumbling', 'Mixing',
+            'Blending', 'Merging', 'Combining', 'Uniting', 'Joining', 'Connecting',
+            'Linking', 'Attaching', 'Fastening', 'Securing', 'Locking', 'Bolting',
+            'Latching', 'Clasping', 'Gripping', 'Grasping', 'Clutching', 'Seizing',
+            'Grabbing', 'Snatching', 'Capturing', 'Catching', 'Trapping', 'Ensnaring',
+            'Entangling', 'Enmeshing', 'Embroiling', 'Involving', 'Engaging',
+            'Participating', 'Competing', 'Contesting', 'Vying', 'Striving',
+            'Struggling', 'Warring', 'Combating', 'Conflicting', 'Colliding',
+            'Crashing', 'Bumping', 'Pounding', 'Hammering', 'Beating', 'Pulsing',
+            'Throbbing', 'Vibrating', 'Shaking', 'Trembling', 'Quivering', 'Shivering',
+            'Shuddering', 'Quaking', 'Tremoring', 'Rumbling', 'Roaring', 'Bellowing',
+            'Barking', 'Yapping', 'Yipping', 'Baying', 'Wailing', 'Sobbing',
+            'Whimpering', 'Moaning', 'Groaning', 'Sighing', 'Breathing', 'Gasping',
+            'Panting', 'Wheezing', 'Coughing', 'Sneezing', 'Sniffing', 'Snorting',
+            'Blowing', 'Puffing', 'Huffing', 'Exhaling', 'Inhaling', 'Living',
+            'Existing', 'Being', 'Becoming', 'Growing', 'Developing', 'Maturing',
+            'Aging', 'Ripening', 'Blossoming', 'Flowering', 'Blooming', 'Sprouting',
+            'Germinating', 'Seeding', 'Planting', 'Sowing', 'Harvesting', 'Reaping',
+            'Gathering', 'Collecting', 'Accumulating', 'Amassing', 'Stockpiling',
+            'Hoarding', 'Saving', 'Storing', 'Preserving', 'Conserving', 'Shielding',
+            'Sheltering', 'Harboring', 'Housing', 'Accommodating', 'Hosting',
+            'Entertaining', 'Amusing', 'Delighting', 'Pleasing', 'Satisfying',
+            'Gratifying', 'Fulfilling', 'Completing', 'Finishing', 'Ending',
+            'Concluding', 'Terminating', 'Stopping', 'Halting', 'Pausing', 'Resting',
+            'Waiting', 'Lingering', 'Loitering', 'Dawdling', 'Dallying', 'Delaying',
+            'Postponing', 'Deferring', 'Procrastinating', 'Stalling', 'Hesitating',
+            'Wavering', 'Vacillating', 'Oscillating', 'Fluctuating', 'Varying',
             'Changing', 'Shifting', 'Altering', 'Modifying', 'Adjusting', 'Adapting',
-            'Transforming', 'Converting', 'Transmuting', 'Metamorphosing', 'Evolving', 'Developing',
+            'Transforming', 'Converting', 'Transmuting', 'Metamorphosing', 'Evolving',
         ];
 
         const dogNames = [
@@ -785,38 +530,37 @@ class App {
             'Rusty', 'Buster', 'Ranger', 'Dash', 'Blaze', 'Bolt', 'Chase',
             'Hunter', 'Wolf', 'Fang', 'Bruno', 'Zeus', 'Thor', 'Apollo',
             'Hercules', 'Titan', 'Atlas', 'Odin', 'Loki', 'Fenrir', 'Gunner',
-            'Ranger', 'Scout', 'Tracker', 'Hunter', 'Stalker', 'Shadow',
-            'Phantom', 'Ghost', 'Spirit', 'Mystic', 'Magic', 'Wizard',
-            'Sorcerer', 'Warlock', 'Mage', 'Druid', 'Shaman', 'Sage',
-            'Oracle', 'Prophet', 'Seer', 'Vision', 'Dream', 'Nightmare',
-            'Terror', 'Horror', 'Fear', 'Dread', 'Panic', 'Fright',
-            'Scare', 'Shock', 'Surprise', 'Amaze', 'Astonish', 'Astound',
-            'Stun', 'Daze', 'Confuse', 'Baffle', 'Perplex', 'Puzzle',
-            'Mystery', 'Enigma', 'Riddle', 'Question', 'Answer', 'Solution',
-            'Result', 'Outcome', 'Effect', 'Consequence', 'Impact', 'Influence',
-            'Power', 'Force', 'Strength', 'Might', 'Energy', 'Vigor',
-            'Vitality', 'Life', 'Spirit', 'Soul', 'Heart', 'Mind',
-            'Brain', 'Thought', 'Idea', 'Concept', 'Notion', 'Theory',
-            'Hypothesis', 'Premise', 'Assumption', 'Belief', 'Faith', 'Trust',
-            'Hope', 'Wish', 'Dream', 'Goal', 'Target', 'Aim',
-            'Purpose', 'Mission', 'Quest', 'Journey', 'Voyage', 'Trip',
-            'Travel', 'Adventure', 'Expedition', 'Exploration', 'Discovery', 'Finding',
-            'Treasure', 'Prize', 'Reward', 'Gift', 'Present', 'Offering',
-            'Sacrifice', 'Tribute', 'Honor', 'Glory', 'Fame', 'Renown',
-            'Prestige', 'Status', 'Rank', 'Position', 'Title', 'Name',
-            'Label', 'Tag', 'Mark', 'Sign', 'Symbol', 'Token',
-            'Badge', 'Emblem', 'Crest', 'Shield', 'Armor', 'Helmet',
-            'Crown', 'Tiara', 'Ring', 'Necklace', 'Bracelet', 'Anklet',
-            'Earring', 'Pendant', 'Charm', 'Amulet', 'Talisman', 'Relic',
-            'Artifact', 'Antique', 'Vintage', 'Classic', 'Retro', 'Old',
-            'Ancient', 'Primeval', 'Prehistoric', 'Fossil', 'Bone', 'Skeleton',
-            'Skull', 'Head', 'Face', 'Muzzle', 'Snout', 'Nose',
-            'Mouth', 'Teeth', 'Fangs', 'Canines', 'Incisors', 'Molars',
-            'Jaw', 'Chin', 'Cheek', 'Ear', 'Ears', 'Tail',
-            'Paw', 'Paws', 'Claws', 'Nails', 'Fur', 'Coat',
-            'Hair', 'Mane', 'Ruff', 'Collar', 'Leash', 'Lead',
-            'Chain', 'Rope', 'Cord', 'String', 'Thread', 'Wire',
-            'Cable', 'Rope', 'Lasso', 'Snare', 'Trap', 'Cage',
+            'Tracker', 'Stalker', 'Phantom', 'Ghost', 'Spirit', 'Mystic',
+            'Magic', 'Wizard', 'Sorcerer', 'Warlock', 'Mage', 'Druid',
+            'Shaman', 'Sage', 'Oracle', 'Prophet', 'Seer', 'Vision',
+            'Dream', 'Nightmare', 'Terror', 'Horror', 'Fear', 'Dread',
+            'Panic', 'Fright', 'Scare', 'Shock', 'Surprise', 'Amaze',
+            'Astonish', 'Astound', 'Stun', 'Daze', 'Confuse', 'Baffle',
+            'Perplex', 'Puzzle', 'Mystery', 'Enigma', 'Riddle', 'Question',
+            'Answer', 'Solution', 'Result', 'Outcome', 'Effect', 'Consequence',
+            'Impact', 'Influence', 'Power', 'Force', 'Strength', 'Might',
+            'Energy', 'Vigor', 'Vitality', 'Life', 'Spirit', 'Soul',
+            'Heart', 'Mind', 'Brain', 'Thought', 'Idea', 'Concept',
+            'Notion', 'Theory', 'Hypothesis', 'Premise', 'Assumption', 'Belief',
+            'Faith', 'Trust', 'Hope', 'Wish', 'Goal', 'Target',
+            'Aim', 'Purpose', 'Mission', 'Quest', 'Journey', 'Voyage',
+            'Trip', 'Travel', 'Adventure', 'Expedition', 'Exploration', 'Discovery',
+            'Finding', 'Treasure', 'Prize', 'Reward', 'Gift', 'Present',
+            'Offering', 'Sacrifice', 'Tribute', 'Honor', 'Glory', 'Fame',
+            'Renown', 'Prestige', 'Status', 'Rank', 'Position', 'Title',
+            'Name', 'Label', 'Tag', 'Mark', 'Sign', 'Symbol',
+            'Token', 'Badge', 'Emblem', 'Crest', 'Shield', 'Armor',
+            'Helmet', 'Crown', 'Tiara', 'Ring', 'Necklace', 'Bracelet',
+            'Anklet', 'Earring', 'Pendant', 'Charm', 'Amulet', 'Talisman',
+            'Relic', 'Artifact', 'Antique', 'Vintage', 'Classic', 'Retro',
+            'Old', 'Ancient', 'Primeval', 'Prehistoric', 'Fossil', 'Bone',
+            'Skeleton', 'Skull', 'Head', 'Face', 'Muzzle', 'Snout',
+            'Nose', 'Mouth', 'Teeth', 'Fangs', 'Canines', 'Incisors',
+            'Molars', 'Jaw', 'Chin', 'Cheek', 'Ear', 'Ears',
+            'Tail', 'Paw', 'Paws', 'Claws', 'Nails', 'Fur',
+            'Coat', 'Hair', 'Mane', 'Ruff', 'Collar', 'Leash',
+            'Lead', 'Chain', 'Rope', 'Cord', 'String', 'Thread',
+            'Wire', 'Cable', 'Lasso', 'Snare', 'Trap', 'Cage',
             'Kennel', 'Den', 'Lair', 'Nest', 'Home', 'House',
             'Shelter', 'Haven', 'Refuge', 'Sanctuary', 'Retreat', 'Hideaway',
             'Hideout', 'Secret', 'Private', 'Personal', 'Special', 'Unique',
@@ -837,57 +581,44 @@ class App {
             'Mindful', 'Thoughtful', 'Considerate', 'Kind', 'Gentle', 'Sweet',
             'Nice', 'Good', 'Fine', 'Great', 'Excellent', 'Superb',
             'Wonderful', 'Marvelous', 'Fantastic', 'Amazing', 'Incredible', 'Unbelievable',
-            'Extraordinary', 'Remarkable', 'Outstanding', 'Exceptional', 'Phenomenal', 'Spectacular',
-            'Magnificent', 'Glorious', 'Majestic', 'Grand', 'Noble', 'Royal',
-            'Regal', 'Imperial', 'Sovereign', 'Supreme', 'Ultimate', 'Final',
-            'Last', 'End', 'Finish', 'Complete', 'Done', 'Finished',
+            'Extraordinary', 'Remarkable', 'Outstanding', 'Exceptional', 'Phenomenal',
+            'Spectacular', 'Magnificent', 'Glorious', 'Majestic', 'Grand', 'Noble',
+            'Royal', 'Regal', 'Imperial', 'Sovereign', 'Supreme', 'Ultimate',
+            'Final', 'Last', 'End', 'Finish', 'Complete', 'Done', 'Finished',
             'Ace', 'Bandit', 'Copper', 'Diesel', 'Echo', 'Fargo', 'Gizmo',
             'Hank', 'Iggy', 'Jax', 'Koda', 'Lucky', 'Moose', 'Nero',
             'Otis', 'Pongo', 'Quinn', 'Radar', 'Sarge', 'Tank', 'Uriah',
-            'Vader', 'Winston', 'Xander', 'Yogi', 'Zorro', 'Arlo', 'Bandit',
-            'Cody', 'Dexter', 'Elvis', 'Finn', 'Gus', 'Harley', 'Ivan',
-            'Jasper', 'Kobe', 'Louie', 'Maverick', 'Nash', 'Ollie', 'Peanut',
-            'Rocco', 'Samson', 'Teddy', 'Ulysses', 'Vince', 'Woody', 'Xena',
-            'Yukon', 'Ziggy', 'Ajax', 'Bane', 'Casper', 'Drake', 'Eddie',
-            'Flash', 'Goliath', 'Hank', 'Iron', 'Jett', 'Khan', 'Lance',
-            'Mason', 'Niko', 'Orion', 'Pudge', 'Rexy', 'Spike', 'Thor',
-            'Urban', 'Viper', 'Waldo', 'Yoda', 'Zane', 'Alpha', 'Bravo',
-            'Delta', 'Eagle', 'Falcon', 'Griffin', 'Hawk', 'Ibis', 'Jaguar',
-            'Kestrel', 'Lynx', 'Mantis', 'Nimbus', 'Osprey', 'Phoenix', 'Quail',
-            'Raven', 'Sparrow', 'Talon', 'Umbra', 'Vulture', 'Wren', 'Xerus',
-            'Yak', 'Zephyr', 'Blaze', 'Cinder', 'Ember', 'Flame', 'Glow',
-            'Heat', 'Ignis', 'Kindle', 'Lava', 'Magma', 'Nova', 'Oven',
-            'Pyro', 'Quasar', 'Radiant', 'Solar', 'Thermal', 'Ultra', 'Volta',
-            'Warmth', 'Xenon', 'Yellow', 'Zenith', 'Aurora', 'Breeze', 'Cloud',
-            'Drizzle', 'Equinox', 'Foggy', 'Gale', 'Hail', 'Ice', 'Jetstream',
-            'Kraken', 'Lightning', 'Monsoon', 'Nimbus', 'Ocean', 'Pacific', 'Quake',
-            'Rain', 'Stormy', 'Thunder', 'Undertow', 'Vortex', 'Wave', 'Xenon',
-            'Yonder', 'Zephyr', 'Abyss', 'Blizzard', 'Cyclone', 'Deluge', 'Eclipse',
-            'Frosty', 'Glacier', 'Hurricane', 'Iceberg', 'Jetty', 'Kelp', 'Lagoon',
-            'Monsoon', 'Nebula', 'Orbit', 'Planet', 'Quasar', 'Rocket', 'Saturn',
-            'Tornado', 'Universe', 'Vacuum', 'Whirlwind', 'Xenith', 'Yield', 'Zenith',
+            'Vader', 'Winston', 'Xander', 'Yogi', 'Zorro', 'Arlo', 'Cody',
+            'Dexter', 'Elvis', 'Finn', 'Gus', 'Harley', 'Ivan', 'Jasper',
+            'Kobe', 'Louie', 'Maverick', 'Nash', 'Ollie', 'Peanut', 'Rocco',
+            'Samson', 'Teddy', 'Ulysses', 'Vince', 'Woody', 'Xena', 'Yukon',
+            'Ziggy', 'Ajax', 'Bane', 'Casper', 'Drake', 'Eddie', 'Flash',
+            'Goliath', 'Iron', 'Jett', 'Khan', 'Lance', 'Mason', 'Niko',
+            'Orion', 'Pudge', 'Rexy', 'Spike', 'Urban', 'Viper', 'Waldo',
+            'Yoda', 'Zane', 'Alpha', 'Bravo', 'Delta', 'Eagle', 'Falcon',
+            'Griffin', 'Hawk', 'Ibis', 'Jaguar', 'Kestrel', 'Lynx', 'Mantis',
+            'Osprey', 'Phoenix', 'Quail', 'Raven', 'Sparrow', 'Talon', 'Umbra',
+            'Vulture', 'Wren', 'Xerus', 'Yak', 'Zephyr', 'Blaze', 'Cinder',
+            'Ember', 'Flame', 'Glow', 'Heat', 'Ignis', 'Kindle', 'Lava',
+            'Magma', 'Nova', 'Oven', 'Pyro', 'Quasar', 'Radiant', 'Solar',
+            'Thermal', 'Ultra', 'Volta', 'Warmth', 'Xenon', 'Yellow', 'Zenith',
+            'Aurora', 'Breeze', 'Cloud', 'Drizzle', 'Equinox', 'Foggy', 'Gale',
+            'Hail', 'Ice', 'Jetstream', 'Kraken', 'Lightning', 'Monsoon', 'Nimbus',
+            'Ocean', 'Pacific', 'Quake', 'Rain', 'Stormy', 'Thunder', 'Undertow',
+            'Vortex', 'Wave', 'Yonder', 'Abyss', 'Blizzard', 'Cyclone', 'Deluge',
+            'Eclipse', 'Frosty', 'Glacier', 'Hurricane', 'Iceberg', 'Jetty', 'Kelp',
+            'Lagoon', 'Nebula', 'Orbit', 'Planet', 'Rocket', 'Saturn', 'Tornado',
+            'Universe', 'Vacuum', 'Whirlwind', 'Xenith', 'Yield',
         ];
 
         const isCat = Math.random() < 0.5;
-        const pool = isCat ? cats : dogs;
         const names = isCat ? catNames : dogNames;
         const species = isCat ? 'the cat' : 'the dog';
 
         const pick = arr => arr[Math.floor(Math.random() * arr.length)];
-        const art = pick(pool);
         const name = pick(names);
 
-        return `${art}\n\n${name} ${species}`;
-    }
-
-    showCompanion() {
-        const el = document.getElementById('companion-display');
-        el.textContent = this.generateCompanion();
-    }
-
-    clearCompanion() {
-        const el = document.getElementById('companion-display');
-        el.textContent = '';
+        return { name: `${name} ${species}`, isCat };
     }
 
     sleep(ms) {
