@@ -702,8 +702,9 @@ class App {
         const pick = arr => arr[Math.floor(Math.random() * arr.length)];
         const name = pick(names);
         const breed = pick(breeds);
+        const species = isCat ? 'cat' : 'dog';
 
-        return { name: `${name} the ${breed}`, isCat };
+        return { name: `${name} the ${breed} ${species}`, isCat };
     }
 
     sleep(ms) {
